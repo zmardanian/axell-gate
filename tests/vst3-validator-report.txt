@@ -1,0 +1,381 @@
+* Loading module...
+
+	/home/Alex/axell-gate/build/AxellGate_artefacts/Release/VST3/Axell Gate.vst3
+
+* Check valid bundle structure...
+
+* Scanning classes...
+
+  Factory Info:
+	vendor = Axell Yobag
+	url = 
+	email = axellpetre@protonmail.com
+
+  Class Info 0:
+	name = Axell Gate
+	category = Audio Module Class
+	subCategories = Fx|Dynamics
+	version = 2.0.0
+	sdkVersion = VST 3.8.0
+	cid = ABCDEF019182FAEB4178796247746531
+
+  Class Info 1:
+	name = Axell Gate
+	category = Component Controller Class
+	subCategories = Fx|Dynamics
+	version = 2.0.0
+	sdkVersion = VST 3.8.0
+	cid = ABCDEF011234ABCD4178796247746531
+
+* Checking snapshots...
+
+Info: No snapshots in Bundle.
+
+* Creating tests...
+
+* Running tests...
+
+-------------------------------------------------------------
+TestSuite : Axell Gate
+-------------------------------------------------------------
+
+-------------------------------------------------------------
+TestSuite : General Tests
+-------------------------------------------------------------
+
+[Scan Editor Classes]
+Info:  ===Scan Editor Classes ====================================
+Info:  This component has an edit controller class
+Info:     Controller CID: {ABCDEF01-1234-ABCD-4178-796247746531}
+[Succeeded]
+
+[Scan Buses]
+Info:  ===Scan Buses ====================================
+Info:  => Audio Buses: [2 In(s) => 1 Out(s)]
+Info:       In [0]: "Input" (Main-Default Active) 
+Info:       In [1]: "Beat (side-chain)" (Aux-Default Active) 
+Info:       Out[0]: "Output" (Main-Default Active) 
+Info:  => Event Buses: [0 In(s) => 0 Out(s)]
+[Succeeded]
+
+[Scan Parameters]
+Info:  ===Scan Parameters ====================================
+Info:  This component exports 57 parameter(s)
+Info:     Parameter 000 (id=3357091): [title="Mode"] [unit=""] [type = Discrete, default = 0.000000, unit = 0]
+Info:     Parameter 001 (id=812263075): [title="Detection"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 002 (id=109641799): [title="Speed"] [unit=""] [type = Discrete, default = 1.000000, unit = 0]
+Info:     Parameter 003 (id=602006635): [title="Threshold"] [unit=""] [type = Float, default = 0.500000, unit = 0]
+Info:     Parameter 004 (id=564403871): [title="Sensitivity"] [unit=""] [type = Float, default = 0.500000, unit = 0]
+Info:     Parameter 005 (id=766560352): [title="Breath Level"] [unit=""] [type = Float, default = 0.850000, unit = 0]
+Info:     Parameter 006 (id=93822778): [title="Bleed Removal"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 007 (id=825684593): [title="Bleed Freeze"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 008 (id=108280125): [title="Range"] [unit=""] [type = Float, default = 0.250000, unit = 0]
+Info:     Parameter 009 (id=740224584): [title="Attack"] [unit=""] [type = Float, default = 0.500000, unit = 0]
+Info:     Parameter 010 (id=3208383): [title="Hold"] [unit=""] [type = Float, default = 0.404802, unit = 0]
+Info:     Parameter 011 (id=1090594823): [title="Release"] [unit=""] [type = Float, default = 0.451304, unit = 0]
+Info:     Parameter 012 (id=3552336): [title="Tail"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:  =>Parameter 012 (id=3552336): getParamValueByString ("Natural") doesn't return the original normalized value! Got 0.000000 instead of 1.000000.
+Info:     Parameter 013 (id=1241534069): [title="Hit Sensitivity"] [unit=""] [type = Float, default = 0.275862, unit = 0]
+Info:     Parameter 014 (id=3493088): [title="Rate"] [unit=""] [type = Discrete, default = 0.400000, unit = 0]
+Info:     Parameter 015 (id=109761319): [title="Pattern Length"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 016 (id=109854462): [title="Swing"] [unit=""] [type = Float, default = 0.000000, unit = 0]
+Info:     Parameter 017 (id=3108285): [title="Edge"] [unit=""] [type = Float, default = 0.500000, unit = 0]
+Info:     Parameter 018 (id=1141971201): [title="Output"] [unit=""] [type = Float, default = 0.500000, unit = 0]
+Info:     Parameter 019 (id=109761253): [title="Step 1"] [unit=""] [type = Toggle, default = 1.000000, unit = 0]
+Info:     Parameter 020 (id=109761254): [title="Step 2"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 021 (id=109761255): [title="Step 3"] [unit=""] [type = Toggle, default = 1.000000, unit = 0]
+Info:     Parameter 022 (id=109761256): [title="Step 4"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 023 (id=109761257): [title="Step 5"] [unit=""] [type = Toggle, default = 1.000000, unit = 0]
+Info:     Parameter 024 (id=109761258): [title="Step 6"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 025 (id=109761259): [title="Step 7"] [unit=""] [type = Toggle, default = 1.000000, unit = 0]
+Info:     Parameter 026 (id=109761260): [title="Step 8"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 027 (id=109761261): [title="Step 9"] [unit=""] [type = Toggle, default = 1.000000, unit = 0]
+Info:     Parameter 028 (id=1255115243): [title="Step 10"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 029 (id=1255115244): [title="Step 11"] [unit=""] [type = Toggle, default = 1.000000, unit = 0]
+Info:     Parameter 030 (id=1255115245): [title="Step 12"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 031 (id=1255115246): [title="Step 13"] [unit=""] [type = Toggle, default = 1.000000, unit = 0]
+Info:     Parameter 032 (id=1255115247): [title="Step 14"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 033 (id=1255115248): [title="Step 15"] [unit=""] [type = Toggle, default = 1.000000, unit = 0]
+Info:     Parameter 034 (id=1255115249): [title="Step 16"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 035 (id=501206707): [title="Hit Note"] [unit=""] [type = Float, default = 0.283465, unit = 0]
+Info:  =>Parameter 035 (id=501206707): getParamValueByString ("C1") doesn't return the original normalized value! Got 0.000000 instead of 0.283465.
+Info:     Parameter 036 (id=1041356077): [title="Step 1 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 037 (id=1041356078): [title="Step 2 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 038 (id=1041356079): [title="Step 3 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 039 (id=1041356080): [title="Step 4 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 040 (id=1041356081): [title="Step 5 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 041 (id=1041356082): [title="Step 6 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 042 (id=1041356083): [title="Step 7 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 043 (id=1041356084): [title="Step 8 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 044 (id=1041356085): [title="Step 9 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 045 (id=69783715): [title="Step 10 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 046 (id=69783716): [title="Step 11 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 047 (id=69783717): [title="Step 12 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 048 (id=69783718): [title="Step 13 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 049 (id=69783719): [title="Step 14 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 050 (id=69783720): [title="Step 15 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 051 (id=69783721): [title="Step 16 Level"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:     Parameter 052 (id=101944263): [title="Key High-Pass"] [unit=""] [type = Float, default = 0.410680, unit = 0]
+Info:     Parameter 053 (id=101944387): [title="Key Low-Pass"] [unit=""] [type = Float, default = 1.000000, unit = 0]
+Info:  =>Parameter 053 (id=101944387): getParamValueByString ("Off") doesn't return the original normalized value! Got 0.000000 instead of 1.000000.
+Info:     Parameter 054 (id=2096174342): [title="Key Listen"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 055 (id=1652125811): [title="Bypass"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 056 (id=1886548852): [title="Program"] [unit=""] [type = Discrete, default = 0.000000, unit = 0]
+Info:  =>Parameter 056 (id=1886548852) is kIsProgramChange, but not a kIsList!
+[Succeeded]
+
+[MIDI Mapping]
+Info:  ===MIDI Mapping ====================================
+[Succeeded]
+
+[MIDI Learn]
+Info:  ===MIDI Learn ====================================
+Info:  No MIDI Learn interface supplied!
+[Succeeded]
+
+[Scan Units]
+Info:  ===Scan Units ====================================
+Info:  This component has 1 unit(s).
+Info:     Unit000 (ID = 0): "Root Unit" (parent ID = -1, programlist ID = 1886548852)
+[Succeeded]
+
+[Scan Programs]
+Info:  ===Scan Programs ====================================
+Info:  Programlist 000 (id=1886548852):  "Factory Presets" (25 programs).
+Info:  Programlist 000->Program 000: "Init"
+Info:  Programlist 000->Program 001: "Rap Lead - Clean Gaps"
+Info:  Programlist 000->Program 002: "Rap Lead - Kill Beat Bleed"
+Info:  Programlist 000->Program 003: "Ad-Libs & Doubles"
+Info:  Programlist 000->Program 004: "Breath Remover"
+Info:  Programlist 000->Program 005: "Natural Singing"
+Info:  Programlist 000->Program 006: "Podcast & Voice-Over"
+Info:  Programlist 000->Program 007: "Live Tracking (Zero Latency)"
+Info:  Programlist 000->Program 008: "Tight Kick"
+Info:  Programlist 000->Program 009: "Short Snare"
+Info:  Programlist 000->Program 010: "808 Tamer"
+Info:  Programlist 000->Program 011: "Gated Snare (80s)"
+Info:  Programlist 000->Program 012: "Punchy Toms"
+Info:  Programlist 000->Program 013: "Sample Cleanup"
+Info:  Programlist 000->Program 014: "Hats - Super Tight"
+Info:  Programlist 000->Program 015: "Trance Gate 16ths"
+Info:  Programlist 000->Program 016: "Stutter 32nds"
+Info:  Programlist 000->Program 017: "Half-Time Chop"
+Info:  Programlist 000->Program 018: "Swing Gate"
+Info:  Programlist 000->Program 019: "Triplet Pulse"
+Info:  Programlist 000->Program 020: "Soft Tremolo 8ths"
+Info:  Programlist 000->Program 021: "Kick Trigger (MIDI)"
+Info:  Programlist 000->Program 022: "Ducking Pump"
+Info:  Programlist 000->Program 023: "Accent Chop"
+Info:  Programlist 000->Program 024: "Live Tracking - Boomy Room"
+[Succeeded]
+
+[Terminate/Initialize]
+Info:  ===Terminate/Initialize ====================================
+[Succeeded]
+
+[Check Unit Structure]
+Info:  ===Check Unit Structure ====================================
+Info:  All units have valid parent IDs.
+[Succeeded]
+
+[Valid State Transition 32bits]
+Info:  ===Valid State Transition 32bits ====================================
+[Succeeded]
+
+[Valid State Transition 64bits]
+Info:  ===Valid State Transition 64bits ====================================
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Bus Consistency]
+Info:  ===Bus Consistency ====================================
+[Succeeded]
+
+[Bus Activation]
+Info:  ===Bus Activation ====================================
+Info:     Bus Activation: Input Audio Bus (0) (kMain)
+Info:     Bus Activation: Input Audio Bus (1) (kAux)
+Info:     Bus Activation: Output Audio Bus (0) (kMain)
+[Succeeded]
+
+[Check Audio Bus Arrangement]
+Info:  ===Check Audio Bus Arrangement ====================================
+Info:     Check Input Audio Bus Arrangement (0)
+Info:     Check Input Audio Bus Arrangement (1)
+Info:     Check Output Audio Bus Arrangement (0)
+[Succeeded]
+
+[SideChain Arrangement]
+Info:  ===SideChain Arrangement ====================================
+[Succeeded]
+
+[Suspend/Resume]
+Info:  ===Suspend/Resume ====================================
+[Succeeded]
+
+[Note Expression]
+Info:  ===Note Expression ====================================
+Info:  No Note Expression interface supplied!
+[Succeeded]
+
+[Keyswitch]
+Info:  ===Keyswitch ====================================
+Info:  No Keyswitch interface supplied!
+[Succeeded]
+
+[ProcessContext Requirements]
+Info:  ===ProcessContext Requirements ====================================
+Info:  ProcessContextRequirements:
+Info:   - SystemTime
+Info:   - ContinousTimeSamples
+Info:   - ProjectTimeMusic
+Info:   - BarPosititionMusic
+Info:   - CycleMusic
+Info:   - SamplesToNextClock
+Info:   - Tempo
+Info:   - TimeSignature
+Info:   - Chord
+Info:   - FrameRate
+Info:   - TransportState
+[Succeeded]
+
+-------------------------------------------------------------
+TestSuite : Single Precision (32 bit) Tests
+-------------------------------------------------------------
+
+[Process Test]
+[Succeeded]
+
+[Process function running in another thread]
+Info:  ===Process function running in another thread ====================================
+[Succeeded]
+
+[Silence Flags]
+Info:  ===Silence Flags ====================================
+[Succeeded]
+
+[Silence Processing]
+Info:  ===Silence Processing ====================================
+[Succeeded]
+
+[Parameters Flush (no Buffer)]
+Info:  ===Parameters Flush (no Buffer) ====================================
+[Succeeded]
+
+[Parameters Flush 2 (only numChannel==0)]
+Info:  ===Parameters Flush 2 (only numChannel==0) ====================================
+[Succeeded]
+
+[Parameters Flush 2 (no Buffer, no parameter change)]
+Info:  ===Parameters Flush 2 (no Buffer, no parameter change) ====================================
+[Succeeded]
+
+[Variable Block Size]
+Info:  ===Variable Block Size ====================================
+[Succeeded]
+
+[Process Format]
+Info:  ===Process Format ====================================
+Info:  ***Tested Sample Rates***
+Info:        22050 Hz - processed successfully!
+Info:        32000 Hz - processed successfully!
+Info:        44100 Hz - processed successfully!
+Info:        48000 Hz - processed successfully!
+Info:        88200 Hz - processed successfully!
+Info:        96000 Hz - processed successfully!
+Info:       192000 Hz - processed successfully!
+Info:       384000 Hz - processed successfully!
+Info:    1234.5678 Hz - processed successfully!
+Info:    12345.678 Hz - processed successfully!
+Info:    123456.78 Hz - processed successfully!
+Info:    1234567.8 Hz - processed successfully!
+[Succeeded]
+
+[Parameter Bypass persistence]
+Info:  ===Parameter Bypass persistence ====================================
+[Succeeded]
+
+[In: Stereo: 2 Channels, Out: Stereo: 2 Channels]
+Info:  ===In: Stereo: 2 Channels, Out: Stereo: 2 Channels ====================================
+[Succeeded]
+
+[In: Mono: 1 Channels, Out: Mono: 1 Channels]
+Info:  ===In: Mono: 1 Channels, Out: Mono: 1 Channels ====================================
+[Succeeded]
+
+[Accuracy: Block, 1 Parameters, Change every100 Samples]
+Info:  ===Accuracy: Block, 1 Parameters, Change every100 Samples ====================================
+[Succeeded]
+
+[Accuracy: Sample, 1 Parameters, Change every100 Samples]
+Info:  ===Accuracy: Sample, 1 Parameters, Change every100 Samples ====================================
+Info:     Not all points have been read via IParameterChanges
+[Succeeded]
+
+-------------------------------------------------------------
+TestSuite : Double Precision (64 bit) Tests
+-------------------------------------------------------------
+
+[Process Test]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Process function running in another thread]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Silence Flags]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Silence Processing]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Parameters Flush (no Buffer)]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Parameters Flush 2 (only numChannel==0)]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Parameters Flush 2 (no Buffer, no parameter change)]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Variable Block Size]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Process Format]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Parameter Bypass persistence]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[In: Stereo: 2 Channels, Out: Stereo: 2 Channels]
+Info:  ===In: Stereo: 2 Channels, Out: Stereo: 2 Channels ====================================
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[In: Mono: 1 Channels, Out: Mono: 1 Channels]
+Info:  ===In: Mono: 1 Channels, Out: Mono: 1 Channels ====================================
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Accuracy: Block, 1 Parameters, Change every100 Samples]
+Info:  ===Accuracy: Block, 1 Parameters, Change every100 Samples ====================================
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Accuracy: Sample, 1 Parameters, Change every100 Samples]
+Info:  ===Accuracy: Sample, 1 Parameters, Change every100 Samples ====================================
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+-------------------------------------------------------------
+Result: 47 tests passed, 0 tests failed
+-------------------------------------------------------------

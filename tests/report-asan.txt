@@ -1,0 +1,183 @@
+PASS  silence in -> exactly silence out, VOCAL @ 48.0 kHz                                                       0.0000   [0 .. 0]
+PASS  NaN / Inf in: non-finite output samples, VOCAL @ 48.0 kHz                                                 0.0000   [0 .. 0]
+PASS  output = input (delayed by the latency) x the gate gain, VOCAL @ 48.0 kHz                                 0.0000   [0 .. 1e-06]
+PASS  silence in -> exactly silence out, SHAPE @ 48.0 kHz                                                       0.0000   [0 .. 0]
+PASS  NaN / Inf in: non-finite output samples, SHAPE @ 48.0 kHz                                                 0.0000   [0 .. 0]
+PASS  output = input (delayed by the latency) x the gate gain, SHAPE @ 48.0 kHz                                 0.0000   [0 .. 1e-06]
+PASS  silence in -> exactly silence out, RHYTHM @ 48.0 kHz                                                      0.0000   [0 .. 0]
+PASS  NaN / Inf in: non-finite output samples, RHYTHM @ 48.0 kHz                                                0.0000   [0 .. 0]
+PASS  output = input (delayed by the latency) x the gate gain, RHYTHM @ 48.0 kHz                                0.0000   [0 .. 1e-06]
+PASS  block sizes 1 / 64 / 4096 vs 512: max |difference|, VOCAL @ 48.0 kHz                                      0.0000   [0 .. 1e-06]
+PASS  block sizes 1 / 64 / 4096 vs 512: max |difference|, SHAPE @ 48.0 kHz                                      0.0000   [0 .. 1e-06]
+PASS  block sizes 1 / 64 / 4096 vs 512: max |difference|, RHYTHM @ 48.0 kHz                                     0.0000   [0 .. 1e-06]
+PASS  VOCAL BEST, voice at -18 dBFS: gate open during the voice @ 48.0 kHz                                    100.0000 %  [97 .. 100]
+PASS  VOCAL BEST, voice at -18 dBFS: gate closed in the pauses @ 48.0 kHz                                     100.0000 %  [95 .. 100]
+PASS  VOCAL BEST after 2 s of digital silence: gate closed in the pauses @ 48.0 kHz                           100.0000 %  [95 .. 100]
+PASS  VOCAL BEST, voice at -42 dBFS: gate open during the voice @ 48.0 kHz                                    100.0000 %  [97 .. 100]
+PASS  VOCAL BEST, voice at -42 dBFS: gate closed in the pauses @ 48.0 kHz                                     100.0000 %  [95 .. 100]
+PASS  VOCAL FAST, voice at -18 dBFS: gate open during the voice @ 48.0 kHz                                    100.0000 %  [97 .. 100]
+PASS  VOCAL FAST, voice at -18 dBFS: gate closed in the pauses @ 48.0 kHz                                     100.0000 %  [95 .. 100]
+PASS  VOCAL FAST, voice at -42 dBFS: gate open during the voice @ 48.0 kHz                                    100.0000 %  [97 .. 100]
+PASS  VOCAL FAST, voice at -42 dBFS: gate closed in the pauses @ 48.0 kHz                                     100.0000 %  [95 .. 100]
+PASS  LIVE: latency @ 48.0 kHz                                                                                  0.0000 smp  [0 .. 0]
+PASS  LIVE: open in the loud part (-20 dBFS) @ 48.0 kHz                                                         1.0000   [0.99 .. 1]
+PASS  LIVE: closed in the quiet part (-60 dBFS) after the release @ 48.0 kHz                                  -60.0000 dB  [-61 .. -59]
+PASS  SHAPE kick: tail length at TAIL 50 % re TAIL 100 % @ 48.0 kHz                                             0.5070 x  [0.35 .. 0.75]
+PASS  SHAPE kick: the first 3 ms of the hit, error re the hit @ 48.0 kHz                                      -84.7003 dB  [-300 .. -35]
+PASS  SHAPE 808: tail length at TAIL 50 % re TAIL 100 % @ 48.0 kHz                                              0.4869 x  [0.35 .. 0.75]
+PASS  SHAPE 808: the first 3 ms of the hit, error re the hit @ 48.0 kHz                                       -90.5810 dB  [-300 .. -35]
+PASS  SHAPE 808: treble splatter in the shortened tail, re the hit @ 48.0 kHz                                 -94.6494 dB  [-300 .. -90]
+PASS  SHAPE snare: tail length at TAIL 50 % re TAIL 100 % @ 48.0 kHz                                            0.4665 x  [0.35 .. 0.75]
+PASS  SHAPE snare: the first 3 ms of the hit, error re the hit @ 48.0 kHz                                     -75.6490 dB  [-300 .. -35]
+PASS  RHYTHM: gain at the step centres (open 1, closed -80 dB): max error @ 48.0 kHz                            0.0000   [0 .. 0.0001]
+PASS  RHYTHM: closing edge centred on the grid line @ 48.0 kHz                                                  0.0104 ms  [-0.05 .. 0.05]
+PASS  RHYTHM: swing 50 % moves the off-beat 16th by a quarter step @ 48.0 kHz                                   0.2499 steps  [0.24 .. 0.26]
+PASS  host bypass: output = input delayed by the latency @ 48.0 kHz                                             0.0000   [0 .. 0]
+PASS  BLEED: bleed removed in the pauses (second half) @ 48.0 kHz                                              33.4928 dB  [15 .. 200]
+PASS  BLEED: bleed removed under the voice (second half) @ 48.0 kHz                                            29.6375 dB  [10 .. 200]
+PASS  BLEED without a side-chain: the input passes unchanged (x gain) @ 48.0 kHz                                0.0000   [0 .. 1e-06]
+PASS  BLEED path: available after learning @ 48.0 kHz                                                           1.0000   [1 .. 1]
+PASS  BLEED meter: the gaps are quieter by @ 48.0 kHz                                                          21.7561 dB  [10 .. 200]
+PASS  BLEED meter: fit of the estimate @ 48.0 kHz                                                               1.0000   [0.8 .. 1]
+PASS  BLEED meter: never reads more than the true removal (meter - measured) @ 48.0 kHz                       -11.7367 dB  [-100 .. 0]
+PASS  BLEED path: accepted at the same sample rate @ 48.0 kHz                                                   1.0000   [1 .. 1]
+PASS  BLEED restored: removed in the first phrase's pauses (fresh: 10 dB) @ 48.0 kHz                           35.9630 dB  [15 .. 200]
+PASS  BLEED after reset(): removed in the first phrase's pauses @ 48.0 kHz                                     35.9367 dB  [15 .. 200]
+PASS  BLEED: mic silent while the beat plays -> exactly silence out @ 48.0 kHz                                  0.0000   [0 .. 0]
+PASS  BLEED: after the silence, removed in the first phrase's pauses @ 48.0 kHz                                35.7755 dB  [15 .. 200]
+PASS  BLEED path: refused at another sample rate @ 48.0 kHz                                                     0.0000   [0 .. 0]
+PASS  BLEED path: a corrupt path is ignored (output finite) @ 48.0 kHz                                          1.0000   [1 .. 1]
+PASS  preset 'Init': output peak re input peak (finite: yes) @ 48.0 kHz                                        -0.0000 dB  [-80 .. 0.01]
+PASS  preset 'Ad-Libs & Doubles': output peak re input peak (finite: yes) @ 48.0 kHz                           -0.0000 dB  [-80 .. 0.01]
+PASS  preset 'Podcast & Voice-Over': output peak re input peak (finite: yes) @ 48.0 kHz                        -0.0000 dB  [-80 .. 0.01]
+PASS  preset 'Short Snare': output peak re input peak (finite: yes) @ 48.0 kHz                                 -0.0321 dB  [-80 .. 0.01]
+PASS  preset 'Punchy Toms': output peak re input peak (finite: yes) @ 48.0 kHz                                 -0.0321 dB  [-80 .. 0.01]
+PASS  preset 'Trance Gate 16ths': output peak re input peak (finite: yes) @ 48.0 kHz                           -0.0101 dB  [-80 .. 0.01]
+PASS  preset 'Swing Gate': output peak re input peak (finite: yes) @ 48.0 kHz                                  -0.0101 dB  [-80 .. 0.01]
+PASS  preset 'Kick Trigger (MIDI)': output peak re input peak (finite: yes) @ 48.0 kHz                          0.0000 dB  [-80 .. 0.01]
+PASS  preset 'Live Tracking - Boomy Room': output peak re input peak (finite: yes) @ 48.0 kHz                  -0.0000 dB  [-80 .. 0.01]
+PASS  SHAPE MIDI: one note per hit @ 48.0 kHz                                                                   7.0000 notes  [7 .. 7]
+PASS  SHAPE MIDI: note on at the hit (worst) @ 48.0 kHz                                                         0.5000 ms  [0 .. 3]
+PASS  SHAPE MIDI: velocity, loud hits minus 20 dB quieter hits @ 48.0 kHz                                      53.0000   [40 .. 60]
+PASS  SHAPE MIDI: every note ends @ 48.0 kHz                                                                    7.0000 offs  [7 .. 7]
+PASS  SHAPE MIDI: a note ends with the number it started with (note changed while sounding) @ 48.0 kHz          1.0000   [1 .. 1]
+PASS  RHYTHM step levels: gain at the step centres, max error @ 48.0 kHz                                        0.0000   [0 .. 0.0001]
+PASS  LEVEL key: 60 Hz at -20 dBFS opens with the default key (80 Hz high-pass) @ 48.0 kHz                    100.0000 %  [99 .. 100]
+PASS  LEVEL key: ... stays closed with KEY HP 200 Hz @ 48.0 kHz                                                 0.0000 %  [0 .. 0]
+PASS  LEVEL key: 8 kHz at -20 dBFS opens with KEY LP off @ 48.0 kHz                                           100.0000 %  [99 .. 100]
+PASS  LEVEL key: ... stays closed with KEY LP 1 kHz @ 48.0 kHz                                                  0.0000 %  [0 .. 0]
+PASS  LEVEL KEY LISTEN: a 100 Hz tone through KEY HP 1 kHz, level re input @ 48.0 kHz                         -80.0500 dB  [-300 .. -40]
+PASS  room model: learns RT60 0.5 s (mean of the mid bands) @ 48.0 kHz                                          0.4833 s  [0.38 .. 0.65]
+PASS  room model: a pure tail is explained by the room (unexplained share) @ 48.0 kHz                           0.0045   [0 .. 0.2]
+PASS  room model: an onset is not (unexplained share) @ 48.0 kHz                                                1.0000   [0.6 .. 1]
+PASS  pause model: a release after a 50 ms closure vs the same evidence after 600 ms of pause (P(voice) ratio) @ 48.0 kHz      3.7200 x  [3 .. 1e+09]
+PASS  VOCAL BEST in a reverberant room (RT60 0.5 s): open during the voice @ 48.0 kHz                         100.0000 %  [97 .. 100]
+PASS  VOCAL BEST in a reverberant room: closed in the pauses (250 ms from the voice) @ 48.0 kHz               100.0000 %  [95 .. 100]
+PASS  mode switches while playing: largest sample step re the input's                                           1.0000 x  [0 .. 1.5]
+PASS  no memory allocation in process() (mode / speed / detection switches, bypass, BLEED)                      0.0000 allocs  [0 .. 0]
+ALL PASS: 77 of 77 checks passed (34.8 s)
+PASS  parameter count = 55 (1.0: 35)
+PASS  parameter index 0 is 'mode' (version hint 1)
+PASS  parameter index 1 is 'detect' (version hint 1)
+PASS  parameter index 2 is 'speed' (version hint 1)
+PASS  parameter index 3 is 'threshold' (version hint 1)
+PASS  parameter index 4 is 'sensitivity' (version hint 1)
+PASS  parameter index 5 is 'breath' (version hint 1)
+PASS  parameter index 6 is 'bleed' (version hint 1)
+PASS  parameter index 7 is 'bleedFreeze' (version hint 1)
+PASS  parameter index 8 is 'range' (version hint 1)
+PASS  parameter index 9 is 'attack' (version hint 1)
+PASS  parameter index 10 is 'hold' (version hint 1)
+PASS  parameter index 11 is 'release' (version hint 1)
+PASS  parameter index 12 is 'tail' (version hint 1)
+PASS  parameter index 13 is 'sensDb' (version hint 1)
+PASS  parameter index 14 is 'rate' (version hint 1)
+PASS  parameter index 15 is 'steps' (version hint 1)
+PASS  parameter index 16 is 'swing' (version hint 1)
+PASS  parameter index 17 is 'edge' (version hint 1)
+PASS  parameter index 18 is 'output' (version hint 1)
+PASS  parameter index 19 is 'step1' (version hint 1)
+PASS  parameter index 20 is 'step2' (version hint 1)
+PASS  parameter index 21 is 'step3' (version hint 1)
+PASS  parameter index 22 is 'step4' (version hint 1)
+PASS  parameter index 23 is 'step5' (version hint 1)
+PASS  parameter index 24 is 'step6' (version hint 1)
+PASS  parameter index 25 is 'step7' (version hint 1)
+PASS  parameter index 26 is 'step8' (version hint 1)
+PASS  parameter index 27 is 'step9' (version hint 1)
+PASS  parameter index 28 is 'step10' (version hint 1)
+PASS  parameter index 29 is 'step11' (version hint 1)
+PASS  parameter index 30 is 'step12' (version hint 1)
+PASS  parameter index 31 is 'step13' (version hint 1)
+PASS  parameter index 32 is 'step14' (version hint 1)
+PASS  parameter index 33 is 'step15' (version hint 1)
+PASS  parameter index 34 is 'step16' (version hint 1)
+PASS  parameter index 35 is 'midiNote' (version hint 2)
+PASS  parameter index 36 is 'level1' (version hint 2)
+PASS  parameter index 37 is 'level2' (version hint 2)
+PASS  parameter index 38 is 'level3' (version hint 2)
+PASS  parameter index 39 is 'level4' (version hint 2)
+PASS  parameter index 40 is 'level5' (version hint 2)
+PASS  parameter index 41 is 'level6' (version hint 2)
+PASS  parameter index 42 is 'level7' (version hint 2)
+PASS  parameter index 43 is 'level8' (version hint 2)
+PASS  parameter index 44 is 'level9' (version hint 2)
+PASS  parameter index 45 is 'level10' (version hint 2)
+PASS  parameter index 46 is 'level11' (version hint 2)
+PASS  parameter index 47 is 'level12' (version hint 2)
+PASS  parameter index 48 is 'level13' (version hint 2)
+PASS  parameter index 49 is 'level14' (version hint 2)
+PASS  parameter index 50 is 'level15' (version hint 2)
+PASS  parameter index 51 is 'level16' (version hint 2)
+PASS  parameter index 52 is 'keyHp' (version hint 2)
+PASS  parameter index 53 is 'keyLp' (version hint 2)
+PASS  parameter index 54 is 'keyListen' (version hint 2)
+PASS  MIDI: produces (SHAPE hits), accepts none
+PASS  defaults: VOCAL smart BEST, range -60 dB, breaths -12 dB, bleed off, pattern on the beats
+PASS  state restore: all parameter values identical
+PASS  state restore: preset name restored
+PASS  state restore: restored instance renders bit-identical audio (max diff 0)
+PASS  state restore: latency = VOCAL FAST (2016 samples)
+PASS  raw-value state restore (pluginval scenario), 50 random rounds
+PASS  prepare: latency = VOCAL BEST (3216)
+PASS  mode 0 speed 1: reported latency 2016 = 2016
+PASS  mode 0 speed 0: reported latency 0 = 0
+PASS  mode 1 speed 2: reported latency 192 = 192
+PASS  mode 2 speed 2: reported latency 0 = 0
+PASS  mode 0 speed 2 + BLEED: reported latency 3856 = 3856
+PASS  every sample during the switches finite and in range
+PASS  programs: 25 factory presets (1.0: 21, numbers kept)
+PASS  every program applies its values
+PASS  'Init' program = all parameter defaults
+PASS  program change from another thread applies the values
+PASS  program change from another thread: name updated by the timer
+PASS  no third-party brand or product names in preset names or descriptions
+PASS  user preset saved (name with illegal file characters)
+PASS  user preset written to $XDG_DATA_HOME/AxellGate/Presets
+PASS  user preset loads
+PASS  user preset restores values and name
+PASS  A/B: each slot keeps its own settings
+PASS  A/B: copy B > A
+PASS  side-chain bus present and disabled by default
+PASS  stereo side-chain accepted
+PASS  processing with the side-chain connected (BLEED on): finite, connection seen
+PASS  host bypass: exactly the dry input, delayed by the reported latency (error 0)
+PASS  mono layout accepted
+PASS  mono: processes (peak 0.087)
+PASS  editor: opens/closes 5x while processing (100 % size)
+PASS  editor: resizable 75-200 %, aspect locked
+PASS  editor: re-opens at the last used size (150 %)
+PASS  1.0 project: VOCAL SMART BEST, hold 60 -> 25 ms, 2.0 parameters at defaults, name kept (hold 25)
+PASS  1.0 project: VOCAL SMART FAST, hold 60 -> 35 ms, 2.0 parameters at defaults, name kept (hold 35)
+PASS  1.0 project: VOCAL SMART BEST, hold 20 -> 0 ms, 2.0 parameters at defaults, name kept (hold 0)
+PASS  1.0 project: VOCAL LEVEL, hold 80 unchanged, 2.0 parameters at defaults, name kept (hold 80)
+PASS  1.0 project: VOCAL LIVE, hold 80 unchanged, 2.0 parameters at defaults, name kept (hold 80)
+PASS  1.0 project: SHAPE, hold 40 unchanged, 2.0 parameters at defaults, name kept (hold 40)
+PASS  2.0 project: HOLD loads as saved (60 ms)
+PASS  1.0 user preset: loads, HOLD 100 -> 65 ms
+PASS  BLEED: the learned path is in the project state (34 KB)
+PASS  BLEED restored from the project: first second 16.7 dB of bleed removed (fresh: 1.4 dB)
+PASS  BLEED: re-saved project keeps the path
+PASS  BLEED never used: no path in the state
+PASS  SHAPE MIDI out: a note C1 per kick (6 on / 6 off), incoming MIDI not passed on
+ALL PASS: 104 of 104 plugin checks passed

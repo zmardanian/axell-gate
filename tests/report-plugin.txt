@@ -1,0 +1,105 @@
+PASS  parameter count = 55 (1.0: 35)
+PASS  parameter index 0 is 'mode' (version hint 1)
+PASS  parameter index 1 is 'detect' (version hint 1)
+PASS  parameter index 2 is 'speed' (version hint 1)
+PASS  parameter index 3 is 'threshold' (version hint 1)
+PASS  parameter index 4 is 'sensitivity' (version hint 1)
+PASS  parameter index 5 is 'breath' (version hint 1)
+PASS  parameter index 6 is 'bleed' (version hint 1)
+PASS  parameter index 7 is 'bleedFreeze' (version hint 1)
+PASS  parameter index 8 is 'range' (version hint 1)
+PASS  parameter index 9 is 'attack' (version hint 1)
+PASS  parameter index 10 is 'hold' (version hint 1)
+PASS  parameter index 11 is 'release' (version hint 1)
+PASS  parameter index 12 is 'tail' (version hint 1)
+PASS  parameter index 13 is 'sensDb' (version hint 1)
+PASS  parameter index 14 is 'rate' (version hint 1)
+PASS  parameter index 15 is 'steps' (version hint 1)
+PASS  parameter index 16 is 'swing' (version hint 1)
+PASS  parameter index 17 is 'edge' (version hint 1)
+PASS  parameter index 18 is 'output' (version hint 1)
+PASS  parameter index 19 is 'step1' (version hint 1)
+PASS  parameter index 20 is 'step2' (version hint 1)
+PASS  parameter index 21 is 'step3' (version hint 1)
+PASS  parameter index 22 is 'step4' (version hint 1)
+PASS  parameter index 23 is 'step5' (version hint 1)
+PASS  parameter index 24 is 'step6' (version hint 1)
+PASS  parameter index 25 is 'step7' (version hint 1)
+PASS  parameter index 26 is 'step8' (version hint 1)
+PASS  parameter index 27 is 'step9' (version hint 1)
+PASS  parameter index 28 is 'step10' (version hint 1)
+PASS  parameter index 29 is 'step11' (version hint 1)
+PASS  parameter index 30 is 'step12' (version hint 1)
+PASS  parameter index 31 is 'step13' (version hint 1)
+PASS  parameter index 32 is 'step14' (version hint 1)
+PASS  parameter index 33 is 'step15' (version hint 1)
+PASS  parameter index 34 is 'step16' (version hint 1)
+PASS  parameter index 35 is 'midiNote' (version hint 2)
+PASS  parameter index 36 is 'level1' (version hint 2)
+PASS  parameter index 37 is 'level2' (version hint 2)
+PASS  parameter index 38 is 'level3' (version hint 2)
+PASS  parameter index 39 is 'level4' (version hint 2)
+PASS  parameter index 40 is 'level5' (version hint 2)
+PASS  parameter index 41 is 'level6' (version hint 2)
+PASS  parameter index 42 is 'level7' (version hint 2)
+PASS  parameter index 43 is 'level8' (version hint 2)
+PASS  parameter index 44 is 'level9' (version hint 2)
+PASS  parameter index 45 is 'level10' (version hint 2)
+PASS  parameter index 46 is 'level11' (version hint 2)
+PASS  parameter index 47 is 'level12' (version hint 2)
+PASS  parameter index 48 is 'level13' (version hint 2)
+PASS  parameter index 49 is 'level14' (version hint 2)
+PASS  parameter index 50 is 'level15' (version hint 2)
+PASS  parameter index 51 is 'level16' (version hint 2)
+PASS  parameter index 52 is 'keyHp' (version hint 2)
+PASS  parameter index 53 is 'keyLp' (version hint 2)
+PASS  parameter index 54 is 'keyListen' (version hint 2)
+PASS  MIDI: produces (SHAPE hits), accepts none
+PASS  defaults: VOCAL smart BEST, range -60 dB, breaths -12 dB, bleed off, pattern on the beats
+PASS  state restore: all parameter values identical
+PASS  state restore: preset name restored
+PASS  state restore: restored instance renders bit-identical audio (max diff 0)
+PASS  state restore: latency = VOCAL FAST (2016 samples)
+PASS  raw-value state restore (pluginval scenario), 50 random rounds
+PASS  prepare: latency = VOCAL BEST (3216)
+PASS  mode 0 speed 1: reported latency 2016 = 2016
+PASS  mode 0 speed 0: reported latency 0 = 0
+PASS  mode 1 speed 2: reported latency 192 = 192
+PASS  mode 2 speed 2: reported latency 0 = 0
+PASS  mode 0 speed 2 + BLEED: reported latency 3856 = 3856
+PASS  every sample during the switches finite and in range
+PASS  programs: 25 factory presets (1.0: 21, numbers kept)
+PASS  every program applies its values
+PASS  'Init' program = all parameter defaults
+PASS  program change from another thread applies the values
+PASS  program change from another thread: name updated by the timer
+PASS  no third-party brand or product names in preset names or descriptions
+PASS  user preset saved (name with illegal file characters)
+PASS  user preset written to $XDG_DATA_HOME/AxellGate/Presets
+PASS  user preset loads
+PASS  user preset restores values and name
+PASS  A/B: each slot keeps its own settings
+PASS  A/B: copy B > A
+PASS  side-chain bus present and disabled by default
+PASS  stereo side-chain accepted
+PASS  processing with the side-chain connected (BLEED on): finite, connection seen
+PASS  host bypass: exactly the dry input, delayed by the reported latency (error 0)
+PASS  mono layout accepted
+PASS  mono: processes (peak 0.087)
+PASS  editor: opens/closes 5x while processing (100 % size)
+PASS  editor: resizable 75-200 %, aspect locked
+PASS  editor: re-opens at the last used size (150 %)
+PASS  1.0 project: VOCAL SMART BEST, hold 60 -> 25 ms, 2.0 parameters at defaults, name kept (hold 25)
+PASS  1.0 project: VOCAL SMART FAST, hold 60 -> 35 ms, 2.0 parameters at defaults, name kept (hold 35)
+PASS  1.0 project: VOCAL SMART BEST, hold 20 -> 0 ms, 2.0 parameters at defaults, name kept (hold 0)
+PASS  1.0 project: VOCAL LEVEL, hold 80 unchanged, 2.0 parameters at defaults, name kept (hold 80)
+PASS  1.0 project: VOCAL LIVE, hold 80 unchanged, 2.0 parameters at defaults, name kept (hold 80)
+PASS  1.0 project: SHAPE, hold 40 unchanged, 2.0 parameters at defaults, name kept (hold 40)
+PASS  2.0 project: HOLD loads as saved (60 ms)
+PASS  1.0 user preset: loads, HOLD 100 -> 65 ms
+PASS  BLEED: the learned path is in the project state (34 KB)
+PASS  BLEED restored from the project: first second 16.7 dB of bleed removed (fresh: 1.4 dB)
+PASS  BLEED: re-saved project keeps the path
+PASS  BLEED never used: no path in the state
+PASS  SHAPE MIDI out: a note C1 per kick (6 on / 6 off), incoming MIDI not passed on
+ALL PASS: 104 of 104 plugin checks passed

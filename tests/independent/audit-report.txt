@@ -1,0 +1,44 @@
+PASS  silence in -> exactly silence out (Vocal44100): max |y| 0
+PASS  silence in -> exactly silence out (Shape44100): max |y| 0
+PASS  silence in -> exactly silence out (Rhythm44100): max |y| 0
+PASS  silence in -> exactly silence out (Vocal48000): max |y| 0
+PASS  silence in -> exactly silence out (Shape48000): max |y| 0
+PASS  silence in -> exactly silence out (Rhythm48000): max |y| 0
+PASS  silence in -> exactly silence out (Vocal96000): max |y| 0
+PASS  silence in -> exactly silence out (Shape96000): max |y| 0
+PASS  silence in -> exactly silence out (Rhythm96000): max |y| 0
+PASS  host bypass: exactly the input, delayed by the reported latency: max error 0
+PASS  random host block sizes 1-4096 = 512-sample blocks: max diff 0
+PASS  VOCAL Best @ 44100: open (> -1 dB) during the voice: 100.0 % of 10 ms blocks (latency 2953)
+PASS  VOCAL Best @ 44100: closed (< -40 dB) in the pauses: 100.0 %
+PASS  VOCAL Best @ 44100: reported latency 67 ms (2.0): 2953 samples = 66.96 ms
+PASS  VOCAL Fast @ 44100: open (> -1 dB) during the voice: 100.0 % of 10 ms blocks (latency 1851)
+PASS  VOCAL Fast @ 44100: closed (< -40 dB) in the pauses: 100.0 %
+PASS  VOCAL Fast @ 44100: reported latency 42 ms (2.0): 1851 samples = 41.97 ms
+PASS  VOCAL Best @ 48000: open (> -1 dB) during the voice: 100.0 % of 10 ms blocks (latency 3216)
+PASS  VOCAL Best @ 48000: closed (< -40 dB) in the pauses: 100.0 %
+PASS  VOCAL Best @ 48000: reported latency 67 ms (2.0): 3216 samples = 67.00 ms
+PASS  VOCAL Fast @ 48000: open (> -1 dB) during the voice: 100.0 % of 10 ms blocks (latency 2016)
+PASS  VOCAL Fast @ 48000: closed (< -40 dB) in the pauses: 100.0 %
+PASS  VOCAL Fast @ 48000: reported latency 42 ms (2.0): 2016 samples = 42.00 ms
+PASS  VOCAL Best @ 96000: open (> -1 dB) during the voice: 100.0 % of 10 ms blocks (latency 6432)
+PASS  VOCAL Best @ 96000: closed (< -40 dB) in the pauses: 100.0 %
+PASS  VOCAL Best @ 96000: reported latency 67 ms (2.0): 6432 samples = 67.00 ms
+PASS  VOCAL Fast @ 96000: open (> -1 dB) during the voice: 100.0 % of 10 ms blocks (latency 4032)
+PASS  VOCAL Fast @ 96000: closed (< -40 dB) in the pauses: 100.0 %
+PASS  VOCAL Fast @ 96000: reported latency 42 ms (2.0): 4032 samples = 42.00 ms
+PASS  VOCAL BEST, real room (rumble -50 dBFS under 60 Hz, no bleed): closed (< -40 dB) in the pauses: 100.0 %
+PASS  VOCAL BEST, real room: open (> -1 dB) during the voice: 100.0 %
+PASS  LIVE: zero latency: 0 samples
+PASS  LIVE: loud part passes unchanged: 
+PASS  LIVE: quiet part gated to the range (-60 dB): -60.0 dB
+PASS  LEVEL key (2.0): 60 Hz at -20 dBFS opens with the default key, stays at the range with KEY HP 200 Hz: -0.0 dB / -60.0 dB
+PASS  SHAPE: TAIL 100 % keeps the natural decay (6/s = 52 dB/s): 52.2 dB/s
+PASS  SHAPE: TAIL 50 % doubles the decay rate (same shape, half as long): 104.8 dB/s = 2.01 x
+PASS  RHYTHM: the default pattern repeats every 1/8 note at 120 bpm (open 16th, closed 16th): 250.00 ms
+PASS  RHYTHM step level (2.0): step 2 at 50 % - the half-gain plateau (1/16 of the time) and its level: 6.1 % of the time at 0.5001, 48.8 % at 1
+PASS  BLEED: beat bleed removed in the pauses (second half, gate open): 34.7 dB
+PASS  BLEED: beat bleed removed under the voice: 31.5 dB
+PASS  all 25 factory presets: finite, never above the input's peak: ok
+
+ALL PASS: 42 of 42 independent checks passed (7 s)
