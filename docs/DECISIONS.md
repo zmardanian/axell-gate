@@ -308,3 +308,20 @@ through the 1.0 gate.
   - **Training material:** read speech by 27 voices. Rap delivery, singing and screams are covered by the real
     take and the dense/compressed conditions, not by labelled rap data; no free labelled corpus exists.
   - **Breaths** are synthetic in training (78 % recognised on held-out voices).
+
+## G22 - The artist's setup: studied, 2.0's network kept (`research/gate_setup.py`, `research/dense_labels.py`)
+
+- **Labels from the artist's own dense takes do not hold up.** The VCTK labeller's threshold lands mid-voice on dense
+  rap in a 0.3 s room (22 % of the voice missed on matched synthetic takes); a De-Reverb + floor labeller reached
+  88-91 % on held-out voices, under G19's 96 % bar. Not used for training.
+- **Instead, the setup with true labels:** corpus voices in the measured room (mids 0.13-0.24 s, the bass 1.3-5x
+  longer), the measured floor (1/f^1.3-1.7, 22-40 dB under the voice), the Volt's 76 on half the takes, and the artist's
+  real beat (a with-beat take minus its acapella) as headphone bleed; 108 takes added to 2.0's data (~26 % of the
+  takes, 1.94 M frames).
+- **Held-out benchmarks** (2.0 -> retrained): the setup conditions improved (voice -41.0 -> -43.1 dB, missed
+  2.22 -> 1.87 %, worst take -16.2 -> -23.5 dB, false opens 4.62 -> 2.13 %; one condition's 60 % false opens are
+  0.01 s of 0.02 s of pause, i.e. nothing); the wide benchmark held (voice -63.2 -> -63.3, starts -44.2 -> -45.0,
+  missed 1.09 -> 1.12 %, false opens 2.82 -> 2.14 %).
+- **The artist's 10 real takes** (no labels): closed slightly more in the quietest frames (open 29.6 -> 26.2 %) but
+  lost slightly more voice on the louder half (-28.0 -> -27.5 dB, worst -17.6 -> -16.9 dB): no real-world gain.
+  **Not shipped.** The gain there is in the settings (the Dojo's Home Room preset: De-Reverb 95 % before the gate).
