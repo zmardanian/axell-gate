@@ -358,3 +358,15 @@ through the 1.0 gate.
   them 0.33 -> 0.12 %. The cost: wide voice lost -63.2 -> -61.6 dB (still the best in any comparison of G21).
 - CPU: one 27 -> 32 -> 3 network and one 19 -> 32 -> 1 network more per 2 ms - unmeasurable in the suite's CPU check.
 
+## G24 - 3.0.1: faster pitch analysis, output byte-identical
+The artist's REAPER session dropped out at a 128-sample buffer with 20 Axell instances. Rule for the fix: no change to
+the sound at all, so every speed-up must give byte-identical output.
+- **Kept:** YIN's difference function (the sibilance/voice detector's pitch analysis, the hottest loop in the shared
+  core) computes eight lags at once in registers on a straight copy of the window. Each lag still adds its terms over
+  j in the original order, so every double is the same. Measured on four of the artist's takes, installed release vs
+  new build in pedalboard at 48 kHz / 128-sample blocks: output byte-identical; CPU Gate 2.10 -> 1.91 % (-9.1 %).
+- **Rejected (bit-identical but slower or no faster):** the FFT butterfly rewritten with explicit real/imaginary
+  arithmetic (GCC already vectorises std::complex; slower), the loop interchange without register blocking (slower),
+  oversampler taps padded to a multiple of eight to drop the scalar tail (slower), AVX2 without FMA (no faster, and it
+  would drop older CPUs). FMA or -ffast-math were not considered: they change the output.
+

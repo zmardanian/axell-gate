@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.0.1 - 2026-10-26
+- **Faster, bit-identical.** The pitch analysis inside the voice detector's pitch analysis (YIN's difference function) now computes eight lags at a time in registers on a straight copy of the window; every lag still adds its terms in the same order, so the output is byte-for-byte the same as 3.0.0 (checked on four of the artist's takes through the installed 3.0.0 and the new build). CPU at 48 kHz, 128-sample blocks: 2.10 -> 1.91 % of one core (-9.1 %).
+
 ## 3.0.0 - 2026-10-26
 - **VOCAL detection: two networks.** 2.0's network decides wherever it is sure of a voice; on doubtful frames a
   second network, trained on 111 voices (108 VCTK voices with forced-aligned labels, from Axell Velvet 3.0), must

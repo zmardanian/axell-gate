@@ -75,7 +75,7 @@ PASS  VOCAL BEST in a reverberant room (RT60 0.5 s): open during the voice @ 48.
 PASS  VOCAL BEST in a reverberant room: closed in the pauses (250 ms from the voice) @ 48.0 kHz               100.0000 %  [95 .. 100]
 PASS  mode switches while playing: largest sample step re the input's                                           1.0000 x  [0 .. 1.5]
 PASS  no memory allocation in process() (mode / speed / detection switches, bypass, BLEED)                      0.0000 allocs  [0 .. 0]
-ALL PASS: 77 of 77 checks passed (62.6 s)
+ALL PASS: 77 of 77 checks passed (35.6 s)
 PASS  parameter count = 55 (1.0: 35)
 PASS  parameter index 0 is 'mode' (version hint 1)
 PASS  parameter index 1 is 'detect' (version hint 1)
