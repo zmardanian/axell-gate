@@ -1,5 +1,7 @@
 # Axell Gate (VST3, Linux)
 
+[![CI](https://github.com/zmardanian/axell-gate/actions/workflows/ci.yml/badge.svg)](https://github.com/zmardanian/axell-gate/actions/workflows/ci.yml)
+
 The gate of the Axell suite, built for vocals and beats:
 - **VOCAL** opens on your voice, not on a level. It keeps every word start, sets breaths to the level you choose,
   hears your room (it tells the voice from the room ringing on after it) and, with the beat on its side-chain,
