@@ -1,5 +1,7 @@
 #include "PluginEditor.h"
 
+#include <axell/gui/BrandTitle.h>
+
 #include <cmath>
 
 using namespace ui;
@@ -414,14 +416,13 @@ void GateEditor::Content::paint (juce::Graphics& g)
     g.fillAll (col::bg);
     g.setColour (col::header);
     g.fillRect (e.headerArea);
-    g.setColour (col::grid);
-    g.drawHorizontalLine (e.headerArea.getBottom() - 1, 0.0f, (float) gui::kWidth);
-    g.setColour (col::text);
-    g.setFont (ui::caps (21.0f, 2));
-    g.drawText ("AXELL GATE", 18, 8, 320, 26, Justification::centredLeft);
+    axell::brand::drawHeaderRule (g, (float) e.headerArea.getBottom() - 1.0f, 0.0f, (float) gui::kWidth, col::grid);
+    // Axell's Dojo: the family emblem, its wave and dot in this plugin's colour
+    axell::brand::drawEmblem (g, { 12.0f, 6.0f, 46.0f, 46.0f }, juce::Colour (0xff8b7fe0));
+    axell::brand::drawTitle (g, 68.0f, 28.0f, "Gate", juce::String (juce::CharPointer_UTF8 ("\xe9\x96\x80"))); // 門
     g.setFont (ui::caps (10.0f, 1));
     g.setColour (col::dim);
-    g.drawText ("SMART VOCAL GATE  +  DRUM SHAPER  +  RHYTHM", 19, 33, 340, 14, Justification::centredLeft);
+    g.drawText ("SMART VOCAL GATE  +  DRUM SHAPER  +  RHYTHM", 67, 37, 340, 14, Justification::centredLeft);
     auto panel = [&g] (Rectangle<int> a, Colour accent)
     {
         const auto r = a.toFloat();

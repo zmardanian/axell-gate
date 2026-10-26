@@ -7,7 +7,8 @@ from concurrent.futures import ProcessPoolExecutor
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import vad_data as VD
 
-OUT = os.path.expanduser("~/axell-gate-data/gatefeat")
+OUT = os.path.expanduser(os.environ.get("AXG_GATE_OUT", "~/axell-gate-data/gatefeat"))
+MODELS = os.path.expanduser(os.environ.get("AXG_MODELS", "~/axell-gate-data/models"))   # 3.0: ~/axell-gate-data/models3
 os.environ["AXG_VAD_OUT"] = OUT
 K = 27                  # network inputs (VoiceActivity.h kVadInputs)
 NC = 1 + K + 6
@@ -62,7 +63,7 @@ if __name__ == "__main__":
     VD.OUT = OUT
     if "--eval-only" not in sys.argv:
         jobs = VD.jobs_list()
-        with ProcessPoolExecutor() as ex:
+        with ProcessPoolExecutor(int(os.environ.get("AXG_WORKERS", 8))) as ex:
             res = list(ex.map(VD.job, jobs))
         mans = []
         for i in range(12):
@@ -83,16 +84,16 @@ if __name__ == "__main__":
     D, Y, S = D[keep], Y[keep], S[keep]
     X = D[:, 1:1 + K]
     print(f"{len(X)} frames: voice {100 * (Y == 1).mean():.1f} %, breath {100 * (Y == 2).mean():.1f} %")
-    os.makedirs(os.path.expanduser("~/axell-gate-data/models"), exist_ok=True)
+    os.makedirs(MODELS, exist_ok=True)
     for te in SPK:
         tr = np.where(S != te)[0][::2]
         m = fit(X[tr], Y[tr])
-        write_header(os.path.expanduser(f"~/axell-gate-data/models/no_{te}.h"), m, len(tr), f"held-out fold: without {te}", float((Y[tr] == 1).mean()))
+        write_header(f"{MODELS}/no_{te}.h", m, len(tr), f"held-out fold: without {te}", float((Y[tr] == 1).mean()))
         sel = S == te; p = prob(X[sel], m); y = Y[sel]
         print(f"held-out {te}: accuracy {100 * ((p[:, 1] > 0.5) == (y == 1)).mean():.1f} % | voice missed {100 * (p[y == 1, 1] < 0.5).mean():.1f} % | "
               f"background as voice {100 * (p[y == 0, 1] > 0.5).mean():.1f} % | breath as voice {100 * (p[y == 2, 1] > 0.5).mean():.1f} % | "
               f"breath recognised {100 * (p[y == 2, 2] > 0.5).mean():.1f} %")
     m = fit(X[::2], Y[::2], epochs=int(os.environ.get("AXG_EP", 12)) + 2)
-    hdr = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Source", "VoiceModel.h")
+    hdr = os.environ.get("AXG_FINAL_HEADER") or os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Source", "VoiceModel.h")
     write_header(hdr, m, len(X) // 2, "all voices", float((Y[::2] == 1).mean()))
     print("wrote", os.path.abspath(hdr))

@@ -41,4 +41,4 @@ PASS  BLEED: beat bleed removed in the pauses (second half, gate open): 34.7 dB
 PASS  BLEED: beat bleed removed under the voice: 31.5 dB
 PASS  all 25 factory presets: finite, never above the input's peak: ok
 
-ALL PASS: 42 of 42 independent checks passed (7 s)
+ALL PASS: 42 of 42 independent checks passed (20 s)

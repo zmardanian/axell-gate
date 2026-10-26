@@ -1,116 +1,85 @@
 #pragma once
-// Axell Gate - voice activity (framework independent, no JUCE).
+// Axell Gate - voice activity. 3.0: two voice networks agree.
 //
-// The detector hears the input through a 4th-order Butterworth high-pass at 60 Hz: rumble (stands, traffic, air
-// conditioning; often stronger than the room tone above it) carries no voice and would wobble every level the
-// decisions rest on. The audio itself is not filtered.
-// Every 2 ms hop the shared sibilance detector (axell-core, from Axell Velvet) delivers a frame of voice features. To
-// those this adds what a gate needs:
-//  - the background floor: minimum statistics of the frame level (the 20 ms-smoothed level's minimum over 1.5 s);
-//  - 48 ms of past context of the noisiness, the level above the floor and the treble against the body;
-//  - 2.0: the room model (RoomModel.h): how much of the frame the room's own decay cannot explain, how far that
-//    unexplained energy is above the room's floor, the room's RT60, and how fast the frame falls re the room's rate;
-//  - a 27 -> 32 -> 3 network (VoiceModel.h, trained on these exact inputs: research/train_gate.py) giving the
-//    probabilities of background, voice and breath.
-// "Loud evidence": a frame within 18 dB of the voice's own running peak level and 12 dB above the floor is voice,
-// whatever the network says (no background in a vocal take is that loud).
+// The detector itself (features, background floor, context, room model, loud evidence) is Axell Gate 2.0's, shared
+// by the suite in axell-core (axell/dsp/VoiceActivity.h, bit-identical to 2.0). On every frame two networks judge it:
+//  - 2.0's network (24 VCTK + 3 ARCTIC voices, level labels), on the inputs it was trained with (Velvet 1.0's
+//    sibilance probability);
+//  - 3.0's network (111 voices: 108 VCTK + 3 ARCTIC, labels where the forced alignment and the level agree, filled word
+//    gaps left out), on its inputs: the same frame with Velvet 3.0's sibilance probability (the same detector frame
+//    through Velvet 3.0's network - no second detector).
+// Where 2.0's network is sure of a voice (p >= 0.8) it decides alone - the artist's own takes keep 2.0's voice; on the
+// doubtful frames a voice needs both networks (the smaller probability) - fewer false openings and far less voice lost
+// on voices neither network trained on (research/bench3_gate.py, DECISIONS G23).
 // Real-time safe: prepare() allocates; push() never allocates, locks or throws.
-#include <axell/dsp/Filters.h>
-#include <axell/dsp/SibilanceDetector.h>
+#include <axell/dsp/VoiceActivity.h>
 
-#include "RoomModel.h"
-
-#include <array>
-#include <cmath>
-#include <vector>
-
-#ifdef AXG_VOICE_MODEL_HEADER
- #include AXG_VOICE_MODEL_HEADER // research builds: held-out models
+#ifdef AXG_VOICE_MODEL3_HEADER
+ #include AXG_VOICE_MODEL3_HEADER // research builds: held-out models
 #else
- #include "VoiceModel.h"
+ #include "VoiceModel3.h"
 #endif
+
+#include <algorithm>
+#include <cmath>
 
 namespace axg
 {
 namespace voice = axell::voice;
-constexpr int kVadInputs = 27;
-static_assert (kVadInputs == vmodel::kInputs, "VoiceModel.h does not match the voice-activity inputs");
-
-struct VoiceFrame
-{
-    int64_t center = 0;          // input sample index of the frame centre
-    float x[kVadInputs] {};      // network inputs
-    float pBack = 1.0f, pVoice = 0.0f, pBreath = 0.0f;
-    float loud = 0.0f;           // P(voice) from level evidence
-    float roomTail = 0.0f;       // 2.0: P(the frame is the room ringing out), from the room model
-    float levelDb = -140.0f, floorDb = -140.0f, voiceRefDb = -140.0f;
-};
+namespace vmodel = axell::voice::vamodel;   // 2.0's network (its prior drives the voice / pause model)
+using voice::kVadInputs;
+using voice::VoiceFrame;
+static_assert (vmodel3::kInputs == kVadInputs, "VoiceModel3.h does not match the voice-activity inputs");
 
 class VoiceActivity
 {
 public:
-    static constexpr int kFloorWin = 750;   // frames (1.5 s)
-    static constexpr int kCtx = 24;         // frames (48 ms)
-    static constexpr double kHpHz = 60.0;   // detection high-pass
-
-    void prepare (double fs)
-    {
-        hp1.setHighPass (fs, kHpHz, 0.5411961001461970); // Butterworth 4th order: Q = 0.541, 1.307
-        hp2.setHighPass (fs, kHpHz, 1.3065629648763766);
-        det.prepare (fs);
-        room.prepare (fs, det.hopSize());
-        reset();
-    }
-
-    void reset() noexcept
-    {
-        det.reset();
-        hp1.resetState();
-        hp2.resetState();
-        room.reset();
-        qHead = qTail = 0;
-        frame = 0;
-        smoothLevel = 0.0f;
-        smoothInit = false;
-        ctxPos = ctxCount = 0;
-        for (auto& c : ctx)
-            c.fill (0.0f);
-        voiceRef = 0.0f;
-        voiceRefInit = false;
-    }
-
-    int hopSize() const noexcept { return det.hopSize(); }
-    int frameDelay() const noexcept { return det.frameDelay(); }
-    const voice::SibilanceDetector& detector() const noexcept { return det; }
+    void prepare (double fs) { va.prepare (fs); }
+    void reset() noexcept { va.reset(); }
+    int hopSize() const noexcept { return va.hopSize(); }
+    int frameDelay() const noexcept { return va.frameDelay(); }
+    const voice::SibilanceDetector& detector() const noexcept { return va.detector(); }
 
     // feed one mono sample; true when out() holds a new frame (centre = newest - frameDelay())
     bool push (float x) noexcept
     {
-        const float y = (float) hp2.process (hp1.process (x, 0), 0);
-        room.push (y);
-        if (! det.push (y))
+        if (! va.push (x))
             return false;
-        analyse (det.out());
+        result = va.out();
+        float x3[kVadInputs];
+        std::copy (result.x, result.x + kVadInputs, x3);
+        x3[18] = voice::SibilanceDetector::probability (va.detector().out().x, voice::kVelvet3Model);
+        float pb3 = 0.0f, pv3 = 0.0f, pr3 = 0.0f;
+        probabilities3 (x3, pb3, pv3, pr3);
+        pv2 = result.pVoice;
+        p3 = pv3;
+        // where 2.0's network is sure of a voice it decides; elsewhere both must hear a voice (DECISIONS G23)
+        const float pv = pv2 >= kSure ? pv2 : std::min (pv2, pv3);
+        result.pBack += result.pVoice - pv;       // what is not voice any more counts as background
+        result.pVoice = pv;
         return true;
     }
 
     const VoiceFrame& out() const noexcept { return result; }
+    static constexpr float kSure = 0.8f;            // 2.0's voice probability above which 2.0 alone decides
+    float voice2() const noexcept { return pv2; }  // each network's own voice probability (research, displays)
+    float voice3() const noexcept { return p3; }
 
-    // the network on the inputs: probabilities of background, voice, breath
-    static void probabilities (const float* x, float& pb, float& pv, float& pr) noexcept
+    // 3.0's network on its inputs: probabilities of background, voice, breath
+    static void probabilities3 (const float* x, float& pb, float& pv, float& pr) noexcept
     {
         float z[kVadInputs];
         for (int i = 0; i < kVadInputs; ++i)
-            z[i] = (x[i] - vmodel::kMu[i]) / vmodel::kSd[i];
-        float o[3] = { vmodel::kB2[0], vmodel::kB2[1], vmodel::kB2[2] };
-        for (int j = 0; j < vmodel::kHidden; ++j)
+            z[i] = (x[i] - vmodel3::kMu[i]) / vmodel3::kSd[i];
+        float o[3] = { vmodel3::kB2[0], vmodel3::kB2[1], vmodel3::kB2[2] };
+        for (int j = 0; j < vmodel3::kHidden; ++j)
         {
-            float a = vmodel::kB1[j];
+            float a = vmodel3::kB1[j];
             for (int i = 0; i < kVadInputs; ++i)
-                a += z[i] * vmodel::kW1[i * vmodel::kHidden + j];
+                a += z[i] * vmodel3::kW1[i * vmodel3::kHidden + j];
             const float h = std::tanh (a);
             for (int c = 0; c < 3; ++c)
-                o[c] += h * vmodel::kW2[j * 3 + c];
+                o[c] += h * vmodel3::kW2[j * 3 + c];
         }
         const float m = std::max (o[0], std::max (o[1], o[2]));
         const float e0 = std::exp (o[0] - m), e1 = std::exp (o[1] - m), e2 = std::exp (o[2] - m), s = e0 + e1 + e2;
@@ -120,96 +89,8 @@ public:
     }
 
 private:
-    // sliding minimum over the last kFloorWin frames (monotone deque in a fixed ring)
-    float floorPush (float v) noexcept
-    {
-        constexpr int R = kFloorWin + 2;
-        while (qHead != qTail && qVal[(size_t) ((qTail - 1 + R) % R)] >= v)
-            qTail = (qTail - 1 + R) % R;
-        qVal[(size_t) qTail] = v;
-        qIdx[(size_t) qTail] = frame;
-        qTail = (qTail + 1) % R;
-        while (qIdx[(size_t) qHead] <= frame - kFloorWin)
-            qHead = (qHead + 1) % R;
-        return qVal[(size_t) qHead];
-    }
-
-    void analyse (const voice::DetFrame& f) noexcept
-    {
-        VoiceFrame& r = result;
-        r.center = f.center;
-        const float lev = f.levelDb;
-        // the floor: 10-frame smoothing (one pole, 1/10), then the running minimum over 1.5 s. 2.0: digital silence
-        // counts as -120 dBFS for it (not -240: the floor would sit there for 1.5 s after the silence before a take)
-        const float levF = std::max (lev, -120.0f);
-        if (! smoothInit)
-        {
-            smoothLevel = levF;
-            smoothInit = true;
-        }
-        else
-            smoothLevel += (levF - smoothLevel) * 0.1f;
-        const float flo = floorPush (smoothLevel);
-        ++frame;
-        const float reFloor = lev - flo;
-        float* x = r.x;
-        for (int i = 0; i < voice::kNumFeat; ++i)
-            x[i] = f.feat[i];
-        for (int i = 3; i < voice::kNumFeat; ++i)
-            x[voice::kNumFeat + i - 3] = f.adapted[i];
-        x[17] = reFloor;
-        x[18] = f.p;
-        x[19] = f.apRaw < 0.3f ? 1.0f : 0.0f;
-        // past context: aperiodicity, level above the floor, treble against the body
-        auto& c = ctx[(size_t) ctxPos];
-        c[0] = f.apRaw;
-        c[1] = reFloor;
-        c[2] = f.feat[9];
-        ctxPos = (ctxPos + 1) % kCtx;
-        ctxCount = std::min (ctxCount + 1, kCtx);
-        for (int i = 0; i < 3; ++i)
-        {
-            float s = 0.0f;
-            for (int k = 0; k < ctxCount; ++k)
-                s += ctx[(size_t) k][(size_t) i];
-            x[20 + i] = s / (float) ctxCount;
-        }
-        // the room's verdict on this frame (its centre lies frameDelay samples back)
-        const auto rv = room.at ((int) std::lround ((double) det.frameDelay() / det.hopSize()));
-        x[23] = rv.excess;
-        x[24] = rv.excessDb;
-        x[25] = std::log (std::max (0.02f, rv.rt60));
-        x[26] = rv.decay;
-        // the room veto: a frame the room's decay fully explains and that falls at the room's own rate is the room
-        // (a held vowel does not fall, a word start is not explained)
-        r.roomTail = (1.0f / (1.0f + std::exp (-(0.12f - rv.excess) / 0.04f))) * (1.0f / (1.0f + std::exp (-(rv.decay - 0.6f) / 0.1f)));
-        probabilities (x, r.pBack, r.pVoice, r.pBreath);
-        // loud evidence: the voice's own running peak level (frames the network is sure about), falling 1 dB/s
-        if (r.pVoice > 0.8f)
-        {
-            voiceRef = voiceRefInit ? std::max (lev, voiceRef - 0.002f) : lev;
-            voiceRefInit = true;
-        }
-        else if (voiceRefInit)
-            voiceRef -= 0.002f;
-        auto sig = [] (float z) { return 1.0f / (1.0f + std::exp (-z)); };
-        r.loud = voiceRefInit ? sig ((lev - (voiceRef - 18.0f)) / 1.5f) * sig ((lev - flo - 12.0f) / 1.5f) : 0.0f;
-        r.levelDb = lev;
-        r.floorDb = flo;
-        r.voiceRefDb = voiceRefInit ? voiceRef : -140.0f;
-    }
-
-    axell::Biquad hp1, hp2;
-    voice::SibilanceDetector det;
-    RoomModel room;
+    voice::VoiceActivity va;
     VoiceFrame result;
-    std::array<float, kFloorWin + 2> qVal {};
-    std::array<int64_t, kFloorWin + 2> qIdx {};
-    int qHead = 0, qTail = 0;
-    int64_t frame = 0;
-    float smoothLevel = 0.0f, voiceRef = 0.0f;
-    bool smoothInit = false, voiceRefInit = false;
-    std::array<std::array<float, 3>, kCtx> ctx {};
-    int ctxPos = 0, ctxCount = 0;
+    float pv2 = 0.0f, p3 = 0.0f;
 };
 } // namespace axg

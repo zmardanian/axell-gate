@@ -13,7 +13,7 @@ SPK = ("slt", "bdl", "jmk")
 NC = 55
 
 N_TAKES = 36   # per CMU ARCTIC voice; 1.0 had 18 takes, all in the 1.0 room
-N_VCTK = 8     # per VCTK voice (2.0: 24 more voices, women and men, 11 accents)
+N_VCTK = int(os.environ.get("AXG_N_VCTK", 8))   # per VCTK voice (2.0: 8 x 24 voices; 3.0: 4 x 96 MFA-labelled voices)
 
 def jobs_list():
     return [(s, k) for s in SPK for k in range(N_TAKES)] + [(s, k) for s in C.vctk_speakers() for k in range(N_VCTK)]

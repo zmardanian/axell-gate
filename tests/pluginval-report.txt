@@ -1,14 +1,13 @@
-Started validating: /home/Alex/axell-gate/build/AxellGate_artefacts/Release/VST3/Axell Gate.vst3
-Random seed: 0x5f7c548
+Random seed: 0x4f49891
 Validation started
 Strictness level: 10
 -----------------------------------------------------------------
-Starting tests in: pluginval / Scan for plugins located in: /home/Alex/axell-gate/build/AxellGate_artefacts/Release/VST3/Axell Gate.vst3...
+Starting tests in: pluginval / Scan for plugins located in: /var/home/Alex/axell-gate/build/AxellGate_artefacts/Release/VST3/Axell Gate.vst3...
 Num plugins found: 1
 
-Testing plugin: VST3-Axell Gate-9f3f5dc8-83732999
-Axell Yobag: Axell Gate v2.0.0
-Completed tests in pluginval / Scan for plugins located in: /home/Alex/axell-gate/build/AxellGate_artefacts/Release/VST3/Axell Gate.vst3
+Testing plugin: VST3-Axell Gate-813b9e60-83732999
+Axell Yobag: Axell Gate v3.0.0
+Completed tests in pluginval / Scan for plugins located in: /var/home/Alex/axell-gate/build/AxellGate_artefacts/Release/VST3/Axell Gate.vst3
 -----------------------------------------------------------------
 Starting tests in: pluginval / Open plugin (cold)...
 Completed tests in pluginval / Open plugin (cold)

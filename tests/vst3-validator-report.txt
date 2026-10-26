@@ -1,6 +1,6 @@
 * Loading module...
 
-	/home/Alex/axell-gate/build/AxellGate_artefacts/Release/VST3/Axell Gate.vst3
+	/var/home/Alex/axell-gate/build/AxellGate_artefacts/Release/VST3/Axell Gate.vst3
 
 * Check valid bundle structure...
 
@@ -15,7 +15,7 @@
 	name = Axell Gate
 	category = Audio Module Class
 	subCategories = Fx|Dynamics
-	version = 2.0.0
+	version = 3.0.0
 	sdkVersion = VST 3.8.0
 	cid = ABCDEF019182FAEB4178796247746531
 
@@ -23,7 +23,7 @@
 	name = Axell Gate
 	category = Component Controller Class
 	subCategories = Fx|Dynamics
-	version = 2.0.0
+	version = 3.0.0
 	sdkVersion = VST 3.8.0
 	cid = ABCDEF011234ABCD4178796247746531
 

@@ -15,8 +15,9 @@ More screens: [BLEED meter](docs/screenshots/gate-bleed.png), [LEVEL key](docs/s
 
 **VOCAL**
 - **SMART** detection: no threshold to set; the same setting works on a whisper and a shout. Four parts:
-  - **Voice-activity network:** trained on 27 voices (women and men, 11 accents) with headphone bleed, room noise,
-    rumble, untreated-room reverberation, compression and breaths.
+  - **Two voice-activity networks** (3.0): 2.0's, trained on 27 voices with headphone bleed, room noise, rumble,
+    untreated-room reverberation, compression and breaths, decides wherever it is sure; on doubtful frames a second
+    network, trained on 111 voices, must agree. Far less voice lost on voices it never heard, fewer false openings.
   - **Room model:** learns your room's reverb time by itself, so the tail after a word is not taken for voice.
   - **Pause model:** knows that a 40 ms closure inside a word is not a pause.
   - **Decision:** a hidden Markov model over a short look-ahead.
@@ -50,7 +51,9 @@ There are 25 factory presets (vocals, drums, rhythm), user presets and A/B. Proj
 | | |
 |---|---|
 | VOCAL vs a classic level gate whose threshold, look-ahead, hold and release were searched for every take (a perfect engineer), at equal background removal | BEST: 7.7 dB less damage to the voice on average (and less in every take), 15.6 dB less to word starts. FAST: 7.3 / 7.4 dB less. In a bare untreated room: 11.8 dB less. One fixed setting, no tuning. |
-| VOCAL on 24 takes in 8 recording conditions, never used for tuning (voices held out) | voice energy removed -63 dB; open in 2.8 % of the pause time; background left -35 dB; 1.1 % of the voice time below -6 dB. With 1.0's three training voices and no room model: -50 dB, 5.4 %, -25 dB. |
+| VOCAL on 24 takes in 8 recording conditions, never used for tuning (voices held out) | 3.0: voice energy removed -62 dB; open in 2.4 % of the pause time; background left -38 dB. (2.0: -63 dB, 2.8 %, -35 dB; 1.0's three voices, no room model: -50 dB, 5.4 %, -25 dB.) |
+| VOCAL on 6 voices no network trained on (8 conditions) | 3.0: voice energy removed -67 dB, missed voice 0.12 % (2.0: -55 dB, 0.33 %) |
+| The artist's own setup (their room, mic, preamp, real beat as bleed) and 10 real takes | 3.0: false openings 4.4 % (dry: 0.2 %), open in 24 % of the gaps of the real takes; the voice kept as in 2.0 |
 | A real dry rap take from a bare room | open in 5 % of the true gaps (1.0: 80 %), word starts intact (-46 dB) |
 | BLEED (beat on the side-chain) | gaps 11-15 dB cleaner, speech 13 dB cleaner than the gate alone; 10-13 dB of bleed removed under the voice; a reopened project cancels from the first second (36 dB vs 10 dB) |
 | SHAPE MIDI | one note per hit, within 3 ms of the hit, velocity following the hit's level |
@@ -58,7 +61,7 @@ There are 25 factory presets (vocals, drums, rhythm), user presets and A/B. Proj
 | RHYTHM | edges centred on the grid within a sample; splatter -94 dB (0.5 ms edges) to -139 dB (10 ms) |
 | Silence in | exactly silence out (all modes, 44.1 / 48 / 96 kHz) |
 | Host bypass | exactly the input, delayed by the reported latency |
-| CPU (48 kHz stereo, one core) | VOCAL 1.8 %, with BLEED 3.8 %, SHAPE 0.16 %, RHYTHM 0.12 % |
+| CPU (48 kHz stereo, one core) | VOCAL 1.9 %, with BLEED 3.9 %, SHAPE 0.16 %, RHYTHM 0.13 % |
 | Real-time safety | no allocation, lock or I/O in the audio path (allocation counter in the test suite) |
 
 All of these come from:

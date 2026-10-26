@@ -272,8 +272,8 @@ PASS  VOCAL BEST in a reverberant room (RT60 0.5 s): open during the voice @ 96.
 PASS  VOCAL BEST in a reverberant room: closed in the pauses (250 ms from the voice) @ 96.0 kHz               100.0000 %  [95 .. 100]
 PASS  mode switches while playing: largest sample step re the input's                                           1.0000 x  [0 .. 1.5]
 PASS  no memory allocation in process() (mode / speed / detection switches, bypass, BLEED)                      0.0000 allocs  [0 .. 0]
-PASS  CPU, 48 kHz stereo, VOCAL smart BEST (% of one core)                                                      1.8392 %  [0 .. 5]
-PASS  CPU, 48 kHz stereo, VOCAL smart + BLEED (% of one core)                                                   3.8302 %  [0 .. 5]
-PASS  CPU, 48 kHz stereo, SHAPE (% of one core)                                                                 0.1638 %  [0 .. 5]
-PASS  CPU, 48 kHz stereo, RHYTHM (% of one core)                                                                0.1238 %  [0 .. 5]
-ALL PASS: 278 of 278 checks passed (45.6 s)
+PASS  CPU, 48 kHz stereo, VOCAL smart BEST (% of one core)                                                      1.9329 %  [0 .. 5]
+PASS  CPU, 48 kHz stereo, VOCAL smart + BLEED (% of one core)                                                   3.9022 %  [0 .. 5]
+PASS  CPU, 48 kHz stereo, SHAPE (% of one core)                                                                 0.1613 %  [0 .. 5]
+PASS  CPU, 48 kHz stereo, RHYTHM (% of one core)                                                                0.1295 %  [0 .. 5]
+ALL PASS: 278 of 278 checks passed (45.9 s)

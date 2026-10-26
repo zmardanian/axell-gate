@@ -1,5 +1,5 @@
 #pragma once
-// Axell Gate - room model for voice detection (framework independent, no JUCE). 2.0.
+// Axell core (from Axell Gate 2.0) - room model for voice detection (framework independent, no JUCE). 2.0.
 //
 // In an untreated room every word rings on: a tail that is quiet next to the voice but loud next to the room tone,
 // periodic (it is the voice) and low in frequency (bare rooms ring longest in the bass). A detector that only sees
@@ -22,7 +22,7 @@
 #include <cmath>
 #include <vector>
 
-namespace axg
+namespace axell::voice
 {
 class RoomModel
 {
@@ -225,4 +225,4 @@ private:
     std::array<std::array<double, kBins>, kBands> hist {};
     std::array<double, kBins> binRate {};
 };
-} // namespace axg
+} // namespace axell::voice

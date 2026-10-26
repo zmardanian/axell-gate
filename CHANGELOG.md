@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.0.0 - 2026-10-26
+- **VOCAL detection: two networks.** 2.0's network decides wherever it is sure of a voice; on doubtful frames a
+  second network, trained on 111 voices (108 VCTK voices with forced-aligned labels, from Axell Velvet 3.0), must
+  hear a voice too. On voices neither network trained on, 12.4 dB less voice lost and a third of the missed voice; on
+  the artist's dry setup, false openings 1.88 -> 0.22 %; background 3.3 dB lower on the held-out wide benchmark. On
+  the artist's own takes the voice is kept as in 2.0 (DECISIONS G23).
+- **The suite's shared voice detector.** Gate's detector now lives in axell-core, bit-identical; Axell Duo
+  Compressor 3.0's VOICE HOLD uses the same one.
+- **Axell's Dojo look**: the family emblem, a brush-written title with Gate's seal (門, "gate") and Gate's own
+  indigo ground.
+- Verified: DSP 278 checks (CPU: VOCAL 1.9 %, + BLEED 3.9 % of one core), plugin 104, ASan + UBSan clean, independent
+  audit 42/42, pluginval strictness 10, Steinberg's VST3 validator 47/47.
+
 ## 2.0.0 - 2026-10-16
 Validated on a real dry rap take from a bare, untreated room, and rebuilt where it fell short.
 

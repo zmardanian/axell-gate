@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(AxellGate VERSION 2.0.0)
+project(AxellGate VERSION 3.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -38,7 +38,7 @@ juce_add_plugin(AxellGate
   VST3_CATEGORIES           Fx Dynamics)
 
 set(GATE_SOURCES Source/PluginProcessor.cpp Source/PluginEditor.cpp)
-set(GATE_DEFS JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_VST3_CAN_REPLACE_VST2=0 JUCE_DISPLAY_SPLASH_SCREEN=0)
+set(GATE_DEFS JUCE_WEB_BROWSER=0 AXELL_THEME_HUE=255 JUCE_USE_CURL=0 JUCE_VST3_CAN_REPLACE_VST2=0 JUCE_DISPLAY_SPLASH_SCREEN=0)
 target_sources(AxellGate PRIVATE ${GATE_SOURCES})
 target_compile_definitions(AxellGate PUBLIC ${GATE_DEFS})
 axell_core_add_gui(AxellGate)

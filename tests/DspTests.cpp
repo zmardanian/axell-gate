@@ -729,7 +729,7 @@ static void testRoom (double fs)
             tail = tail * k + 0.02 * src;            // a diffuse field: decays at the room's rate
             x[i] = (float) (src + 20.0 * tail * nd (g) * 0.05 + 1.0e-5 * nd (g));
         }
-        RoomModel rm;
+        voice::RoomModel rm;   // axell-core (identical to Gate 2.0's)
         const int hop = (int) std::lround (0.002 * fs);
         rm.prepare (fs, hop);
         double exTail = 0, exOn = 0;

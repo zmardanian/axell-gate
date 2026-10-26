@@ -325,3 +325,36 @@ through the 1.0 gate.
 - **The artist's 10 real takes** (no labels): closed slightly more in the quietest frames (open 29.6 -> 26.2 %) but
   lost slightly more voice on the louder half (-28.0 -> -27.5 dB, worst -17.6 -> -16.9 dB): no real-world gain.
   **Not shipped.** The gain there is in the settings (the Dojo's Home Room preset: De-Reverb 95 % before the gate).
+
+## G23 - 3.0: a second network, trained on 111 voices, and a rule for when it speaks (`Source/VoiceActivity.h`)
+
+- **The cluster's data.** Axell Velvet 3.0 brought 108 VCTK voices phone-labelled by the Montreal Forced Aligner (its
+  labels agree with ARCTIC's hand-checked ones 96.3 % of the time, the level labeller's 96.0 %). A 3.0 network
+  (27 -> 32 -> 3, `Source/VoiceModel3.h`) is trained on them plus ARCTIC with fused labels: voice where the aligner
+  and the level agree, pause where both say pause, everything else (and the level labeller's filled word gaps under
+  150 ms, G19's lesson) left out of the loss. Its sibilance input is Velvet 3.0's network.
+- **Alone it is not enough.** It hears far more of voices it never met (held-out VCTK: voice lost -54.8 -> -74.3 dB),
+  but takes the artist's real beat, leaking from the headphones, for a voice (setup false opens 4.6 -> 21 %). The
+  SENSITIVITY control does not fix that (calibrated: it moves false opens by 0.2 points): the error is structural.
+- **Two networks on one frame.** The detector (features, floor, context, room model, loud evidence) is 2.0's, now
+  the suite's shared one in axell-core (bit-identical: 28950 frames of a real take, 0 differ). Each network sees the
+  inputs it was trained with; Velvet 3.0's sibilance probability is computed on the same detector frame (no second
+  detector). The first research build gave both networks Velvet 3.0's probability - 2.0's network then opened in
+  the bleed more than either alone; found because a minimum of two probabilities cannot exceed either.
+- **The rule.** Tried on every benchmark (held out; 2.0's folds and 3.0's folds per voice):
+
+  | | wide: voice / false opens / background | the setup: voice / false opens | unseen voices: voice lost | real takes: open in gaps / voice (worst) |
+  |---|---|---|---|---|
+  | 2.0 | -63.2 / 2.82 % / -34.7 | -41.0 / 4.62 % | -54.8 dB | 25.1 % / -26.8 (-17.2) dB |
+  | mean of the two | -64.6 / 2.47 % / -34.5 | - / 12.4 % | -71.7 dB | 31.3 % |
+  | geometric mean | -63.2 / 2.18 % / -37.5 | -43.0 / 9.34 % | - | - |
+  | minimum | -60.5 / 1.70 % / -39.5 | -39.0 / 4.40 % | -64.2 dB | 23.0 % / -26.3 (-15.3) dB |
+  | **2.0 where sure (p >= 0.8), else the minimum** | -61.6 / **2.41 %** / **-38.0** | **-40.3 / 4.40 %** | **-67.2 dB** | **24.0 % / -26.7 (-17.1) dB** |
+
+  The minimum alone cost the artist's own takes 0.5 dB of voice on average (1.9 dB in the worst take) - by G22's
+  rule not shippable. Letting 2.0 decide wherever it is sure of a voice keeps 2.0's voice on the artist's material
+  (within 0.1-0.7 dB everywhere) and keeps most of the gain: false opens on the dry setup 1.88 -> 0.22 %, background
+  3.3 dB lower on the wide benchmark, 12.4 dB less voice lost on voices neither network trained on, missed voice on
+  them 0.33 -> 0.12 %. The cost: wide voice lost -63.2 -> -61.6 dB (still the best in any comparison of G21).
+- CPU: one 27 -> 32 -> 3 network and one 19 -> 32 -> 1 network more per 2 ms - unmeasurable in the suite's CPU check.
+

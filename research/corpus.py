@@ -25,12 +25,50 @@ from data import utterances as arctic_utterances, load as arctic_load  # noqa: E
 
 # 2.0: VCTK voices (research/vctk_fetch.py; CC BY 4.0) next to CMU ARCTIC's. Speaker ids "p..." are VCTK.
 VCTK = os.path.expanduser("~/axell-gate-data/vctk")
+# 3.0 (AXG_VCTK3=1): Axell Velvet 3.0's VCTK set - 108 voices, 60 utterances each, phone labels by the Montreal Forced
+# Aligner (axell-velvet research/vctk_fetch.py, corpus3.py; MFA agrees with CMU ARCTIC's labels on voice activity at
+# 96.3 %, as 2.0's level labeller did, with no "don't care" frames). The 12 voices of corpus3.TEST_VCTK are never
+# trained on (AXG_VCTK3_TEST=1 lists only them, for the held-out benchmark).
+V3 = os.environ.get("AXG_VCTK3") == "1"
+VCTK3 = os.path.expanduser("~/axell-velvet-data/vctk")
+ALIGNED3 = os.path.expanduser("~/axell-velvet-data/vctk_aligned")
+TEST_VCTK3 = ['p335', 'p280', 'p253', 'p248', 'p323', 'p351', 'p326', 'p376', 'p347', 'p304', 'p363', 'p298']   # corpus3.TEST_VCTK
 
 def vctk_speakers(gender=None):
+    if V3:
+        rows = [l.split() for l in open(f"{VCTK3}/speakers.txt") if l.strip()]
+        test = os.environ.get("AXG_VCTK3_TEST") == "1"
+        return [r[0] for r in rows if (gender is None or r[1] == gender) and os.path.isdir(f"{ALIGNED3}/{r[0]}")
+                and ((r[0] in TEST_VCTK3) == test)]
     if not os.path.exists(f"{VCTK}/speakers.txt"):
         return []
     rows = [l.split() for l in open(f"{VCTK}/speakers.txt") if l.strip()]
     return [r[0] for r in rows if gender is None or r[1] == gender]
+
+def _textgrid_phones(p):
+    """MFA phones: silence ("", sil, sp) -> "pau"; every phone and spoken noise (spn) is voice"""
+    L = open(p).read().splitlines(); out = []; tier = None; i = 0
+    while i < len(L):
+        t = L[i].strip()
+        if t.startswith("name ="):
+            tier = t.split("=")[1].strip().strip('"')
+        if tier == "phones" and t.startswith("xmin =") and i + 2 < len(L) and L[i + 2].strip().startswith("text ="):
+            a = float(t.split("=")[1]); b = float(L[i + 1].split("=")[1]); q = L[i + 2].split("=", 1)[1].strip().strip('"')
+            out.append((a, b, "pau" if q in ("", "sil", "sp") else q)); i += 3; continue
+        i += 1
+    return out
+
+def _float_wav(p):
+    import struct
+    d = open(p, "rb").read(); i = 12; fs = 48000; ch = 1
+    while i < len(d) - 8:
+        cid = d[i:i + 4]; n = struct.unpack("<I", d[i + 4:i + 8])[0]
+        if cid == b"fmt ":
+            ch = struct.unpack("<H", d[i + 10:i + 12])[0]; fs = struct.unpack("<I", d[i + 12:i + 16])[0]
+        elif cid == b"data":
+            return fs, np.frombuffer(d[i + 8:i + 8 + n], "<f4").reshape(-1, ch)[:, 0].astype(np.float64)
+        i += 8 + n + (n & 1)
+    raise ValueError(p)
 
 def vctk_labels(x, fs):
     """voice activity of a clean close-mic studio recording from its level. VCTK's floor is not silence (often
@@ -71,12 +109,39 @@ def vctk_labels(x, fs):
     return segs
 
 def utterances(spk):
+    if spk.startswith("p") and V3:
+        return [(f[:-9], f"{VCTK3}/{spk}/{f[:-9]}.wav", f"{ALIGNED3}/{spk}/{f}") for f in sorted(os.listdir(f"{ALIGNED3}/{spk}"))
+                if f.endswith(".TextGrid") and os.path.exists(f"{VCTK3}/{spk}/{f[:-9]}.wav")]
     if spk.startswith("p"):
         d = f"{VCTK}/{spk}"
         return [(f[:-4], f"{d}/{f}", None) for f in sorted(os.listdir(d)) if f.endswith(".wav")]
     return list(arctic_utterances(spk))
 
 def load(spk, w, l):
+    if spk.startswith("p") and V3:
+        # 3.0: MFA's phones and the 2.0 level labeller must agree; where they differ, "don't care" ("gap"). MFA alone
+        # stretches words into the pauses around them (7.2 % of ARCTIC's pause frames marked voice): trained on it,
+        # the gate opened in 15 % of the pauses of the artist's setup instead of 4.6 % (DECISIONS G23)
+        fs, x = _float_wav(w)
+        H = 0.005; n = int(len(x) / fs / H) + 1; t = (np.arange(n) + 0.5) * H
+        mfa = np.zeros(n, bool); lev = np.zeros(n, bool)
+        for a, b, q in _textgrid_phones(l):
+            if q != "pau":
+                mfa |= (t >= a) & (t < b)
+        gapm = np.zeros(n, bool)
+        for a, b, q in vctk_labels(x, fs):
+            if q == "v":
+                lev |= (t >= a) & (t < b)
+            elif q == "gap":
+                gapm |= (t >= a) & (t < b)
+        # the short gaps between words (< 150 ms; the level labeller fills them) stay "don't care" whatever MFA says:
+        # in a take they hold only bleed and room, and labelled voice they teach "bleed between words = voice" (G19)
+        lab = np.where(gapm, 2, np.where(mfa & lev, 1, np.where(~mfa & ~lev, 0, 2)))
+        segs, a = [], 0
+        for i in range(1, n + 1):
+            if i == n or lab[i] != lab[a]:
+                segs.append((a * H, i * H, ("pau", "v", "gap")[lab[a]])); a = i
+        return fs, x, None, segs
     if spk.startswith("p"):
         import wave
         f = wave.open(w); fs = f.getframerate()
