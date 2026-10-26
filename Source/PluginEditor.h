@@ -88,6 +88,7 @@ private:
     ui::Toggle bleed { "BLEED REMOVAL", ui::col::warn, "pill" }, freeze { "FREEZE", ui::col::global, "pill" };
     ui::Knob keyHp { "KEY HP", ui::col::teal, 52 }, keyLp { "KEY LP", ui::col::teal, 52 };
     ui::Toggle keyListen { "KEY LISTEN", ui::col::warn, "pill" };
+    ui::Toggle pitchHold { "PITCH HOLD", ui::col::teal, "pill" };
     TipArea bleedMeterTip;
     // SHAPE
     ui::Knob tail { "TAIL", ui::col::accent, 120 }, hitSens { "HIT SENS", ui::col::accent, 64 }, hitNote { "HIT NOTE", ui::col::accent, 64 };

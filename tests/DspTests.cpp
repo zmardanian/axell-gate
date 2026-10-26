@@ -824,6 +824,90 @@ static void testSwitching()
     check ("mode switches while playing: largest sample step re the input's", maxOut / maxIn, 0.0, 1.5, "x");
 }
 
+// 4.0 PITCH HOLD (VOCAL, LEVEL detection): a pitched voice under the threshold keeps an open gate open; it never opens
+// the gate, never acts on noise, is capped 500 ms past the last loud crossing, and is block-size invariant
+static void testPitchHold (double fs)
+{
+    const std::string r = " (" + rateName (fs) + ")";
+    auto level = [] (bool ph) {
+        Params p;
+        p.mode = kVocal; p.detect = kLevel; p.speed = kLive;
+        p.thresholdDb = -45.0f; p.rangeDb = -40.0f; p.holdMs = 80.0f; p.releaseMs = 100.0f; p.attackMs = 2.0f;
+        p.pitchHold = ph;
+        return p;
+    };
+    // a voiced sound: 150 Hz with 10 harmonics (1/k), peak `peakDb` dBFS; or white noise of the same peak
+    auto part = [fs] (Buf& x, double t0, double t1, double peakDb, bool pitched, uint32_t seed = 1) {
+        const size_t a = (size_t) (t0 * fs), b = (size_t) (t1 * fs);
+        if (x[0].size() < b) for (auto& c : x) c.resize (b, 0.0f);
+        double norm = 0.0;
+        for (int k = 1; k <= 10; ++k) norm += 1.0 / k;
+        uint32_t st = seed;
+        for (size_t i = a; i < b; ++i)
+        {
+            double v = 0.0;
+            if (pitched)
+                for (int k = 1; k <= 10; ++k) v += std::sin (2.0 * M_PI * 150.0 * k * (double) i / fs) / k / norm;
+            else
+            {
+                st = st * 1664525u + 1013904223u;
+                v = ((double) (st >> 8) / 8388608.0 - 1.0);
+            }
+            for (auto& c : x) c[i] = (float) (v * std::pow (10.0, peakDb / 20.0));
+        }
+    };
+    auto meanGain = [fs] (const Out& o, double t0, double t1) {
+        double s = 0.0; size_t n = 0;
+        for (size_t i = (size_t) (t0 * fs); i < (size_t) (t1 * fs) && i < o.g.size(); ++i) { s += o.g[i]; ++n; }
+        return n ? s / (double) n : 0.0;
+    };
+    {
+        // a loud word, then its soft voiced tail 6 dB under the closing threshold
+        Buf x (2);
+        part (x, 0.2, 0.7, -20.0, true);
+        part (x, 0.7, 1.0, -55.0, true);
+        part (x, 1.0, 1.6, -120.0, false);
+        const Out on = render (fs, level (true), x), off = render (fs, level (false), x);
+        check ("PITCH HOLD: a soft voiced tail under the threshold - gain with it (100-300 ms into the tail)" + r, meanGain (on, 0.8, 1.0), 0.95, 1.0, "");
+        check ("PITCH HOLD: the same tail without it (the 3.x gate closes after HOLD)" + r, meanGain (off, 0.9, 1.0), 0.0, 0.1, "");
+        check ("PITCH HOLD: closes after the voice ends (gain 300-600 ms after the tail)" + r, meanGain (on, 1.3, 1.6), 0.0, 0.02, "");
+    }
+    {
+        // the same tail as noise (aperiodic): nothing changes, bit for bit
+        Buf x (2);
+        part (x, 0.2, 0.7, -20.0, true);
+        part (x, 0.7, 1.0, -59.0, false, 7);
+        part (x, 1.0, 1.4, -120.0, false);
+        const Out on = render (fs, level (true), x), off = render (fs, level (false), x);
+        double d = 0.0;
+        for (size_t c = 0; c < on.y.size(); ++c)
+            for (size_t i = 0; i < on.y[c].size(); ++i) d = std::max (d, (double) std::abs (on.y[c][i] - off.y[c][i]));
+        check ("PITCH HOLD: a noise tail (not a voice) - output with vs without it (max difference)" + r, d, 0.0, 0.0, "");
+    }
+    {
+        // a closed gate: a quiet voice under the threshold never opens it
+        Buf x (2);
+        part (x, 0.0, 0.5, -120.0, false);
+        part (x, 0.5, 1.5, -59.0, true);
+        const Out on = render (fs, level (true), x);
+        check ("PITCH HOLD: never opens the gate (a quiet voice after silence: largest gain)" + r, meanGain (on, 0.5, 1.5), 0.0, 0.0101, "");
+    }
+    {
+        // a sustained pitched sound under the threshold (a tonal bleed, a drone): the hold ends 500 ms after the last
+        // loud moment
+        Buf x (2);
+        part (x, 0.2, 0.5, -20.0, true);
+        part (x, 0.5, 2.5, -59.0, true);
+        const Out on = render (fs, level (true), x);
+        check ("PITCH HOLD: a long pitched sound under the threshold - gain 1-2 s after the last loud moment (capped)" + r, meanGain (on, 1.5, 2.5), 0.0, 0.02, "");
+        Out b37 = render (fs, level (true), x, 37);
+        double d = 0.0;
+        for (size_t i = 0; i < on.g.size() && i < b37.g.size(); ++i) d = std::max (d, (double) std::abs (on.g[i] - b37.g[i]));
+        check ("PITCH HOLD: block 512 vs 37 (gain difference)" + r, d, 0.0, 1.0e-6, "");
+    }
+    check ("PITCH HOLD: on in a new instance's engine parameters", Params().pitchHold ? 1.0 : 0.0, 1.0, 1.0, "");
+}
+
 static void testAllocAndCpu (bool quick)
 {
     {
@@ -893,6 +977,7 @@ int main (int argc, char** argv)
         testRate (fs, quick);
         testV2 (fs);
         testRoom (fs);
+        testPitchHold (fs);
     }
     testSwitching();
     testAllocAndCpu (quick);

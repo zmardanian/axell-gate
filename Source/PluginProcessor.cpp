@@ -18,14 +18,26 @@ juce::String msText (float v) { return v < 10.0f ? juce::String (v, 2) + " ms" :
 juce::String pctText (float v) { return juce::String (juce::roundToInt (v)) + " %"; }
 const juce::Identifier kPresetNameId ("presetName");
 const juce::Identifier kStateVersionId ("stateVersion"), kBleedPathId ("bleedPath"), kBleedFsId ("bleedFs");
-constexpr int kStateVersion = 2;
+constexpr int kStateVersion = 3;   // 3 = 4.0 (PITCH HOLD)
 
 // 1.0 states and presets: VOCAL SMART closed as early as it opened (35 ms BEST, 25 ms FAST), so the tail after the
 // last voice frame was HOLD minus that. 2.0 closes at the decision: keep each saved tail
 void upgradeTree (juce::ValueTree& tree)
 {
-    if ((int) tree.getProperty (kStateVersionId, 1) >= 2)
+    const int version = (int) tree.getProperty (kStateVersionId, 1);
+    // 4.0: PITCH HOLD is on for new instances; a state saved before it existed plays as it did - off
+    if (version < 3 && ! tree.getChildWithProperty ("id", "pitchHold").isValid())
+    {
+        juce::ValueTree c ("PARAM");
+        c.setProperty ("id", "pitchHold", nullptr);
+        c.setProperty ("value", 0.0f, nullptr);
+        tree.appendChild (c, nullptr);
+    }
+    if (version >= 2)
+    {
+        tree.setProperty (kStateVersionId, kStateVersion, nullptr);
         return;
+    }
     auto value = [&] (const char* id, float def) {
         const auto c = tree.getChildWithProperty ("id", id);
         return c.isValid() && c.hasProperty ("value") ? (float) c.getProperty ("value") : def;
@@ -97,6 +109,8 @@ APVTS::ParameterLayout GateProcessor::createLayout()
     p.push_back (std::make_unique<AudioParameterFloat> (ParameterID { "keyLp", 2 }, "Key Low-Pass", klp, 20000.0f,
         fmt ([] (float v) { return v >= 19990.0f ? String ("Off") : String (v / 1000.0f, 1) + " kHz"; })));
     p.push_back (std::make_unique<AudioParameterBool> (ParameterID { "keyListen", 2 }, "Key Listen", false));
+    // 4.0: LEVEL detection - a pitched voice under the threshold keeps the gate open (soft syllables, voiced tails)
+    p.push_back (std::make_unique<AudioParameterBool> (ParameterID { "pitchHold", 3 }, "Pitch Hold", true));
     return { p.begin(), p.end() };
 }
 
@@ -135,6 +149,7 @@ GateProcessor::GateProcessor()
     pKeyHp = apvts.getRawParameterValue ("keyHp");
     pKeyLp = apvts.getRawParameterValue ("keyLp");
     pKeyListen = apvts.getRawParameterValue ("keyListen");
+    pPitchHold = apvts.getRawParameterValue ("pitchHold");
     startTimerHz (20);
 }
 
@@ -186,6 +201,7 @@ axg::Params GateProcessor::readParams() const
     p.keyHpHz = pKeyHp->load();
     p.keyLpHz = pKeyLp->load();
     p.keyListen = pKeyListen->load() > 0.5f;
+    p.pitchHold = pPitchHold->load() > 0.5f;
     return p;
 }
 
@@ -328,6 +344,7 @@ void GateProcessor::applyParams (const axg::Params& p)
     set ("keyHp", p.keyHpHz);
     set ("keyLp", p.keyLpHz);
     set ("keyListen", 0.0f);
+    set ("pitchHold", p.pitchHold ? 1.0f : 0.0f);
 }
 
 int GateProcessor::getNumPrograms() { return (int) axg::factoryPresets().size(); }

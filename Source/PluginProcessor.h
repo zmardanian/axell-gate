@@ -82,6 +82,7 @@ private:
     std::array<std::atomic<float>*, 16> pStep {}, pLevel {};
     std::atomic<float>* pMidiNote = nullptr; std::atomic<float>* pKeyHp = nullptr; std::atomic<float>* pKeyLp = nullptr;
     std::atomic<float>* pKeyListen = nullptr;
+    std::atomic<float>* pPitchHold = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GateProcessor)
 };

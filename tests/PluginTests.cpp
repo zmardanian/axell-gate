@@ -109,12 +109,13 @@ int main()
         for (int k = 1; k <= 16; ++k)
             frozen.add ("level" + juce::String (k));
         frozen.addArray (juce::StringArray { "keyHp", "keyLp", "keyListen" });
+        frozen.add ("pitchHold"); // 4.0
         auto& params = p.getParameters();
         check (params.size() == frozen.size(), "parameter count = " + juce::String (frozen.size()) + " (1.0: " + juce::String (v1Count) + ")");
         for (int i = 0; i < params.size() && i < frozen.size(); ++i)
         {
             auto* wp = dynamic_cast<juce::AudioProcessorParameterWithID*> (params[i]);
-            const int hint = i < v1Count ? 1 : 2;
+            const int hint = i < v1Count ? 1 : (frozen[i] == "pitchHold" ? 3 : 2); // 4.0 parameters carry hint 3
             check (wp != nullptr && wp->getParameterID() == frozen[i] && wp->getVersionHint() == hint,
                    "parameter index " + juce::String (i) + " is '" + frozen[i] + "' (version hint " + juce::String (hint) + ")");
         }
@@ -459,6 +460,53 @@ int main()
             GateProcessor q;
             check (q.loadUserPreset (f) && std::abs (getParam (q, "hold") - 65.0f) < 1e-3f, "1.0 user preset: loads, HOLD 100 -> 65 ms");
             f.deleteFile();
+        }
+    }
+
+    //== 11b. 4.0: PITCH HOLD - on in new instances and presets, off in projects saved before it existed
+    {
+        GateProcessor fresh;
+        check (fresh.readParams().pitchHold, "4.0: a new instance has PITCH HOLD on");
+        bool presetsOn = true;
+        for (int i = 0; i < fresh.getNumPrograms(); ++i)
+        {
+            fresh.setCurrentProgram (i);
+            presetsOn = presetsOn && fresh.readParams().pitchHold;
+        }
+        check (presetsOn, "4.0: every factory preset turns PITCH HOLD on");
+        // a 3.x project: version 2, no pitchHold parameter
+        auto v3State = [] (const char* presetName) {
+            GateProcessor a;
+            setParam (a, "detect", 1.0f);
+            setParam (a, "speed", 0.0f);
+            setParam (a, "hold", 80.0f);
+            auto tree = a.apvts.copyState();
+            for (int i = tree.getNumChildren(); --i >= 0;)
+                if (tree.getChild (i).getProperty ("id").toString() == "pitchHold")
+                    tree.removeChild (i, nullptr);
+            tree.setProperty ("presetName", presetName, nullptr);
+            tree.setProperty ("stateVersion", 2, nullptr);
+            juce::MemoryBlock mb;
+            juce::AudioProcessor::copyXmlToBinary (*tree.createXml(), mb);
+            return mb;
+        };
+        {
+            const auto mb = v3State ("Old Live Gate");
+            GateProcessor b;
+            b.setStateInformation (mb.getData(), (int) mb.getSize());
+            const auto r = b.readParams();
+            check (! r.pitchHold && std::abs (r.holdMs - 80.0f) < 1e-3f && r.detect == axg::kLevel && b.getPresetName() == "Old Live Gate",
+                   "4.0: a 3.x project loads with PITCH HOLD off (it plays as it did), the rest as saved");
+        }
+        for (const float v : { 0.0f, 1.0f })
+        {
+            GateProcessor a;
+            setParam (a, "pitchHold", v);
+            juce::MemoryBlock mb;
+            a.getStateInformation (mb);
+            GateProcessor b;
+            b.setStateInformation (mb.getData(), (int) mb.getSize());
+            check (b.readParams().pitchHold == (v > 0.5f), juce::String ("4.0: a 4.0 project keeps PITCH HOLD ") + (v > 0.5f ? "on" : "off"));
         }
     }
 

@@ -370,3 +370,23 @@ the sound at all, so every speed-up must give byte-identical output.
   oversampler taps padded to a multiple of eight to drop the scalar tail (slower), AVX2 without FMA (no faster, and it
   would drop older CPUs). FMA or -ffast-math were not considered: they change the output.
 
+## G25 - 4.0: PITCH HOLD for the level gate (`Source/Engine.h` PitchHold)
+The artist's session gates the vocal with "Live Tracking (Zero Latency)": LEVEL detection at -45 dBFS, no look-ahead.
+Measured on their 28 takes (each gain-matched to the session's dry vocal, through the session's own De-Reverb first):
+1.33 % of the frames that carry a pitch - certainly voice - were cut by more than 3 dB, up to 6-7 % in some takes,
+mostly soft syllables and voiced endings 25-30 dB under the loudest words. Word starts and ends of normal words were
+untouched; the cut frames are the quiet ones that fall through the threshold.
+- **Kept:** a causal pitch tracker on the key (two RBJ low-passes, decimation to ~12 kHz, YIN over 25 ms, 70-400 Hz,
+  threshold 0.25, RMS at least 26 dB under the closing threshold). While the gate is open and the key is pitched, HOLD
+  restarts. It never opens a closed gate (no look-ahead exists in LIVE), and a pitched sound under the threshold holds
+  at most 500 ms past the last loud moment (a tonal bleed or a drone cannot keep the gate open). Result: pitched
+  frames cut 1.33 -> 0.77 % (-42 %); every level band of the pauses is attenuated as before (-40 dB); the frames newly
+  opened without a pitch are the normal HOLD/RELEASE after the rescued voice (84 % within 200 ms of it, median 18.7 dB
+  above the room floor - consonants, breaths), none later than 500 ms. Noise tails are bit-identical with and without.
+- **CPU:** the analysis runs only while it can matter (gate open, level under the opening threshold), every 10 ms,
+  eight lags at a time: 0.23 -> 0.30 % of one core (LIVE preset, 48 kHz / 128).
+- **Not done:** opening on pitch (a closed gate would open 25 ms late, mid-syllable, with an audible fade-in; the
+  Smart detection with look-ahead already handles soft starts: 0.12 % of pitched frames cut).
+- Legacy: projects saved before 4.0 (state version < 3) load with PITCH HOLD off - they play as they did. Verified: the artist's session state
+  (saved by 3.x) through 3.0.1 and 4.0.0 in a host (48 kHz, 128-sample blocks), four takes: output byte-identical.
+

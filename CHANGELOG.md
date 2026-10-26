@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.0.0 - 2026-10-27
+- **PITCH HOLD (new, LEVEL detection and the zero-latency LIVE gate):** while the voice is still pitched, the gate
+  stays open even when the level dips under the threshold - soft syllables and voiced word endings are no longer cut.
+  A causal pitch tracker (YIN on the key at ~12 kHz, 25 ms, 70-400 Hz) restarts HOLD; it never opens the gate by
+  itself, ignores noise (bit-identical output on aperiodic sound), adds no latency and is capped 500 ms after the last
+  moment above the threshold. On the artist's 28 takes through their session's LIVE gate: voiced moments cut
+  1.33 % -> 0.77 % (-42 %), pauses closed exactly as before; CPU 0.23 -> 0.30 % of one core. On for new instances and
+  every preset; projects saved before 4.0 load with it off and play as they did (state version 3).
+- **Version in the header**: the plugin's version, small and quiet after the title.
+
 ## 3.0.1 - 2026-10-26
 - **Faster, bit-identical.** The pitch analysis inside the voice detector's pitch analysis (YIN's difference function) now computes eight lags at a time in registers on a straight copy of the window; every lag still adds its terms in the same order, so the output is byte-for-byte the same as 3.0.0 (checked on four of the artist's takes through the installed 3.0.0 and the new build). CPU at 48 kHz, 128-sample blocks: 2.10 -> 1.91 % of one core (-9.1 %).
 

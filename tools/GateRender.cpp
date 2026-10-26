@@ -46,6 +46,7 @@ int main (int argc, char** argv)
         else if (k == "range") p.rangeDb = v;
         else if (k == "attack") p.attackMs = v;
         else if (k == "hold") p.holdMs = v;
+        else if (k == "pitchhold") p.pitchHold = v > 0.5;
         else if (k == "release") p.releaseMs = v;
         else if (k == "tail") p.tailPct = v;
         else if (k == "sensdb") p.sensDb = v;

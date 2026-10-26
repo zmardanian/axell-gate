@@ -53,6 +53,8 @@ struct Params
     float rangeDb = -60.0f;     // closed gain
     float attackMs = 2.0f;      // opening ramp (ends at the onset)
     float holdMs = 30.0f;
+    bool pitchHold = true;      // 4.0 LEVEL detection: a pitched voice under the threshold keeps the gate open
+                                // (new instances and presets; states saved before 4.0 load with it off)
     float releaseMs = 50.0f;
     // SHAPE
     float tailPct = 100.0f;     // 100 natural, 50 twice as fast, 10 ten times
@@ -206,6 +208,119 @@ private:
 };
 
 //==============================================================================
+// 4.0 PITCH HOLD (VOCAL, LEVEL detection - the zero-latency gate): a causal voice-pitch tracker on the side chain.
+// While the gate is open and the last 25 ms are periodic in a voice's range (YIN at ~12 kHz, 70-400 Hz, evaluated every
+// 10 ms), the hold restarts: a soft syllable or a word's voiced tail that dips under the threshold keeps the gate open.
+// It never opens the gate (no look-ahead, no latency) and is capped `kMaxExtMs` past the last loud crossing.
+class PitchHold
+{
+public:
+    void prepare (double sampleRate) noexcept
+    {
+        dec = std::max (1, (int) std::lround (sampleRate / 12000.0));
+        const double r = sampleRate / dec;
+        win = (int) std::lround (0.025 * r);
+        tmin = (int) std::floor (r / 400.0);
+        tmax = (int) std::ceil (r / 70.0);
+        step = std::max (1, (int) std::lround (0.010 * r));
+        len = win + tmax;
+        ring.assign ((size_t) len, 0.0f);
+        lin.assign ((size_t) len, 0.0f);
+        d.assign ((size_t) tmax + 1, 0.0);
+        // anti-alias: two RBJ low-passes at 0.35 x the decimated rate
+        const double w0 = 2.0 * 3.14159265358979323846 * 0.35 * r / sampleRate, q = 0.7071;
+        const double al = std::sin (w0) / (2.0 * q), cw = std::cos (w0), a0 = 1.0 + al;
+        b0 = (float) ((1.0 - cw) / 2.0 / a0); b1 = (float) ((1.0 - cw) / a0); b2 = b0;
+        a1 = (float) (-2.0 * cw / a0); a2 = (float) ((1.0 - al) / a0);
+        reset();
+    }
+    void reset() noexcept
+    {
+        std::fill (ring.begin(), ring.end(), 0.0f);
+        for (auto& z : zs) z = 0.0f;
+        pos = 0; cnt = 0; dc = 0; periodic = false;
+    }
+    // one side-chain sample; returns whether the recent signal is a pitched voice at least `minRms` (RMS) strong.
+    // `needed`: the answer matters now (the gate is open and under its opening threshold); otherwise the samples are
+    // only stored and the analysis is skipped
+    bool push (float x, float minRms, bool needed) noexcept
+    {
+        float y = biquad (x, 0);
+        y = biquad (y, 2);
+        if (++dc < dec)
+            return periodic;
+        dc = 0;
+        ring[(size_t) pos] = y;
+        pos = (pos + 1) % len;
+        if (++cnt < step)
+            return periodic;
+        cnt = 0;
+        if (! needed)
+            return periodic = false;
+        double e = 0.0;
+        std::copy (ring.begin() + pos, ring.end(), lin.begin());       // oldest .. newest
+        std::copy (ring.begin(), ring.begin() + pos, lin.begin() + (len - pos));
+        const float* xw = lin.data() + tmax;                         // the last `win` samples
+        for (int j = 0; j < win; ++j)
+            e += (double) xw[j] * xw[j];
+        if (e < (double) minRms * minRms * win)
+            return periodic = false;
+        // YIN's difference function, eight lags at a time held in registers (the window is read once per 8 lags)
+        int t0 = 1;
+        for (; t0 + 8 <= tmax + 1; t0 += 8)
+        {
+            double acc[8] = {};
+            for (int j = 0; j < win; ++j)
+            {
+                const double xj = (double) xw[j];
+                const float* xl = xw + j - t0;
+                for (int u = 0; u < 8; ++u)
+                {
+                    const double v = xj - (double) xl[-u];
+                    acc[u] += v * v;
+                }
+            }
+            for (int u = 0; u < 8; ++u)
+                d[(size_t) (t0 + u)] = acc[u];
+        }
+        for (int t = t0; t <= tmax; ++t)
+        {
+            double acc = 0.0;
+            for (int j = 0; j < win; ++j)
+            {
+                const double v = (double) xw[j] - (double) xw[j - t];
+                acc += v * v;
+            }
+            d[(size_t) t] = acc;
+        }
+        double cum = 0.0, best = 1.0;
+        for (int t = 1; t <= tmax; ++t)
+        {
+            cum += d[(size_t) t];
+            if (t >= tmin && cum > 0.0)
+                best = std::min (best, d[(size_t) t] * t / cum);
+        }
+        return periodic = best < kYinThreshold;
+    }
+    static constexpr float kMaxExtMs = 500.0f;
+    static constexpr double kYinThreshold = 0.25;
+
+private:
+    float biquad (float x, int k) noexcept
+    {
+        const float y = b0 * x + zs[(size_t) k];
+        zs[(size_t) k] = b1 * x - a1 * y + zs[(size_t) k + 1];
+        zs[(size_t) k + 1] = b2 * x - a2 * y;
+        return y;
+    }
+    std::vector<float> ring, lin;
+    std::vector<double> d;
+    std::array<float, 4> zs {};
+    float b0 = 1, b1 = 0, b2 = 0, a1 = 0, a2 = 0;
+    int dec = 4, win = 300, tmin = 30, tmax = 172, step = 60, len = 472, pos = 0, cnt = 0, dc = 0;
+    bool periodic = false;
+};
+
 class Engine
 {
 public:
@@ -262,6 +377,7 @@ public:
         HilbertPair::design (fs, 20.0, 12, c);
         hilbert.setCoefficients (c, 12);
         levelRel = onePole (0.01f, fs);              // peak detector release 10 ms
+        pitch.prepare (fs);
         refAtt = 1.0f - onePole (0.005f, fs);        // onset reference: 5 ms attack
         refRelK = 1.0f - onePole (0.05f, fs);        // 50 ms release
         envK = 1.0f - onePole (0.001f, fs);          // analytic envelope smoothing 1 ms
@@ -320,6 +436,8 @@ public:
         levelEnv = 0.0f;
         levelOpen = false;
         levelHold = 0;
+        pitch.reset();
+        sinceLoud = 1 << 30;
         holdFrames = 0;
         breathSm = 0.0f;
         roomRun = 0;
@@ -361,6 +479,8 @@ public:
         attackSmp = std::max (1.0f, std::clamp (p.attackMs, 0.05f, 50.0f) * 0.001f * (float) fs);
         releaseSmp = std::max (1.0f, std::clamp (p.releaseMs, 1.0f, 2000.0f) * 0.001f * (float) fs);
         holdSmp = (int) (std::clamp (p.holdMs, 0.0f, 2000.0f) * 0.001f * (float) fs);
+        pitchOn = p.pitchHold;
+        maxExtSmp = (int) (PitchHold::kMaxExtMs * 0.001f * (float) fs);
         tailAlpha = 100.0f / std::clamp (p.tailPct, 5.0f, 100.0f) - 1.0f;
         sensLin = std::pow (10.0f, std::clamp (p.sensDb, 1.0f, 30.0f) / 20.0f);
         openTh = 0.3 - 0.0025 * std::clamp ((double) p.sensitivity, -100.0, 100.0); // 0.55 strict .. 0.05 open
@@ -632,6 +752,14 @@ private:
         const float a = std::abs (s);
         levelEnv = a > levelEnv ? a : levelEnv * levelRel;
         bool open = levelOpen;
+        if (pitchOn)
+        {
+            // 4.0 PITCH HOLD: a pitched voice (RMS no lower than 26 dB under the closing threshold) keeps an open gate open
+            const bool pitched = pitch.push (s, 0.05f * thrClose, levelOpen && levelEnv <= thrOpen);
+            sinceLoud = levelEnv > thrOpen ? 0 : std::min (sinceLoud + 1, 1 << 30);
+            if (levelOpen && pitched && sinceLoud < maxExtSmp)
+                levelHold = holdSmp;
+        }
         if (levelEnv > thrOpen)
         {
             open = true;
@@ -1075,6 +1203,9 @@ private:
     int roomRun = 0, roomRunFrames = 15;
     float roomTailSm = 0.0f;
     int holdSmp = 2880, holdFrames = 0, levelHold = 0, lastDecision = 0, sinceOnset = 1 << 30;
+    PitchHold pitch;
+    bool pitchOn = false;
+    int sinceLoud = 1 << 30, maxExtSmp = 24000;
     double openTh = 0.3, freePpq = 0.0;
     float levelEnv = 0.0f, levelRel = 0.9995f, breathSm = 0.0f;
     bool levelOpen = false, hitActive = false;
