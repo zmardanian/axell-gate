@@ -7,7 +7,26 @@ The gate of the Axell suite, built for vocals and beats:
 - **SHAPE** shortens drum tails without clicks and without the kink a release puts in a decay.
 - **RHYTHM** chops on the host's grid with click-free edges.
 
+> **Part of Axell's Dojo** - the Axell Signature suite for rap vocals, beats and masters on Linux:
+> [Penta EQ](https://github.com/zmardanian/axell-penta-eq) · [Duo Compressor](https://github.com/zmardanian/axell-duo-compressor) ·
+> [Gate](https://github.com/zmardanian/axell-gate) · [De-Reverb](https://github.com/zmardanian/axell-dereverb) ·
+> [Velvet](https://github.com/zmardanian/axell-velvet) · [Master](https://github.com/zmardanian/axell-master), installed,
+> updated and tuned to your voice by the [Axell Signature Dojo](https://github.com/zmardanian/axell-signature-dojo).
+> Since 3.0 the plugins share one core library (`external/axell-core`): a breakthrough in one plugin becomes a
+> feature of the next.
+
 ![Axell Gate](docs/screenshots/gate-vocal.png)
+
+## What's new in 3.0
+
+- **Two voice networks**: 2.0's network decides wherever it is sure of a voice; on doubtful frames a second network,
+  trained on 111 voices (108 VCTK voices with forced-aligned labels, from Axell Velvet 3.0's research), must hear a
+  voice too. On voices neither network trained on: **12.4 dB less voice lost** and a third of the missed voice; on the
+  artist's dry setup, false openings 1.88 -> 0.22 %; background 3.3 dB lower on the held-out wide benchmark. The
+  artist's own takes keep 2.0's voice (DECISIONS G23).
+- **The suite's shared voice detector**: Gate's detector now lives in the shared core, bit-identical; Axell Duo
+  Compressor 3.0 and Axell Master 3.0 use it for VOICE HOLD.
+- **Axell's Dojo look**: the family emblem, a brush-written title with Gate's seal (門, "gate"), an indigo ground.
 
 More screens: [BLEED meter](docs/screenshots/gate-bleed.png), [LEVEL key](docs/screenshots/gate-level-key.png), [SHAPE with MIDI](docs/screenshots/gate-shape-midi.png), [RHYTHM step levels](docs/screenshots/gate-rhythm-levels.png).
 
@@ -79,11 +98,26 @@ The reasoning behind every design choice is in [docs/DECISIONS.md](docs/DECISION
 - With heavy compression *and* loud headphone bleed, the background can sit within ~20 dB of the voice. Very quiet
   parts of a word may then dip; route the beat to the side-chain (BLEED) there.
 
+## Engineering progress
+
+| Version | Date | Engineering | Measured |
+|---|---|---|---|
+| **1.0.0** | 2026-10-16 | VOCAL: voice-activity network (3 voices) + fixed-lag HMM + loud evidence; BLEED (frequency-domain Kalman canceller with the beat on the side-chain); SHAPE (decay scaling with look-ahead); RHYTHM (16 steps, host sync); 21 presets | on a real dry rap take from a bare room (measured during 2.0's validation): open in 80 % of its true gaps - the reason for 2.0 |
+| **2.0.0** | 2026-10-16 | Validated on a real dry rap take and rebuilt: a room model (the room's tail is not voice), 27 training voices + real-room conditions, a pause-length model, a 60 Hz detector high-pass, early openings / timed closings, BLEED saved with the project, SHAPE MIDI out, step levels, KEY filters | 24 held-out takes: 13.7 dB less voice removed, half the false openings, 10 dB more background removed; the real take: open in 5 % of its gaps (1.0: 80 %); vs the perfect-engineer classic gate: 7.7 dB less voice damage |
+| **3.0.0** | 2026-10-26 | A second network trained on 111 voices (forced-aligned labels from Axell Velvet's research), consulted where 2.0's is unsure; the detector moved into the shared core (bit-identical) for Duo's and Master's VOICE HOLD; Axell's Dojo look | Unseen voices: voice lost -54.8 -> -67.2 dB, missed 0.33 -> 0.12 %; dry setup false opens 1.88 -> 0.22 %; the artist's takes as in 2.0; 278 DSP + 104 plugin checks, ASan clean, audit 42/42, pluginval L10, validator 47/47 |
+
+Every design decision with its measurement: [docs/DECISIONS.md](docs/DECISIONS.md); all changes: [CHANGELOG.md](CHANGELOG.md).
+
 ## Install (Linux)
 
-    tar xzf AxellGate-2.0.0-linux-x86_64.tar.gz
-    cd AxellGate-2.0.0-linux-x86_64
+Download `AxellGate-3.0.0-linux-x86_64.tar.gz` from the
+[latest release](https://github.com/zmardanian/axell-gate/releases/latest) (optional: `sha256sum -c SHA256SUMS.txt`), then:
+
+    tar xzf AxellGate-3.0.0-linux-x86_64.tar.gz
+    cd AxellGate-3.0.0-linux-x86_64
     ./install.sh
+
+Or let the [Axell Signature Dojo](https://github.com/zmardanian/axell-signature-dojo) install and update it.
 
 Then in REAPER: Options > Preferences > Plug-ins > VST > Re-scan. For BLEED REMOVAL, send the beat's track to the
 vocal track on channels 3/4 and, in the plugin's pin connector, connect inputs 3/4 to the side-chain.
@@ -97,8 +131,9 @@ vocal track on channels 3/4 and, in the plugin's pin connector, connect inputs 3
     bash scripts/install.sh
 
 The DSP lives in JUCE-free headers (`Source/Engine.h`, `VoiceActivity.h`, `Canceller.h` and the shared Axell core in
-`external/axell-core` or `../axell-core`). The voice model is generated by `research/train_gate.py` from the features
-of the shipping C++ code (`tools/GateFeatures.cpp`).
+`external/axell-core` or `../axell-core`, which holds the voice detector and the room model). The voice models are
+generated by `research/train_gate.py` from the features of the shipping C++ code (`tools/GateFeatures.cpp`); the 3.0
+benchmarks are `research/bench3_gate.py` and `research/calib3_gate.py`.
 
 ## Contact
 
