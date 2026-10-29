@@ -1,6 +1,6 @@
 * Loading module...
 
-	/var/home/Alex/axell-gate/build/AxellGate_artefacts/Release/VST3/Axell Gate.vst3
+	~/axell-gate/build/AxellGate_artefacts/Release/VST3/Axell Gate.vst3
 
 * Check valid bundle structure...
 
