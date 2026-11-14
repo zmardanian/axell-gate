@@ -50,6 +50,16 @@ jobs:
         run: ./$BIN/GateDspTests$EXE --quick
       - name: Plugin suite
         run: $RUN ./build/GatePluginTests_artefacts/Release/GatePluginTests$EXE
+      - name: Windows crash details (only when a suite failed)
+        if: failure() && runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Get-ChildItem build -Recurse -Include *DspTests.exe,*PluginTests.exe | Where-Object FullName -match 'Release' | ForEach-Object {
+            Write-Host "== $($_.FullName)"
+            $a = @(); if ($_.Name -match 'DspTests') { $a = '--quick' -split ' ' | Where-Object { $_ } }
+            & $_.FullName @a 2>&1 | Select-Object -Last 25
+            Write-Host ("exit code 0x{0:X8}" -f $LASTEXITCODE)
+          }
       - name: pluginval (strictness 10)
         run: |
           if [ "$RUNNER_OS" = "Windows" ]; then Z=pluginval_Windows.zip; S=.github/pluginval-windows.sha256; else Z=pluginval_Linux.zip; S=.github/pluginval.sha256; fi
