@@ -242,7 +242,7 @@ GateEditor::GateEditor (GateProcessor& p) : AudioProcessorEditor (&p), proc (p)
     slotA.onClick = [this] { proc.selectSlot (0); };
     slotB.onClick = [this] { proc.selectSlot (1); };
     slotCopy.onClick = [this] { proc.copyActiveToOther(); };
-    presetName.setTooltip ("Presets for vocals, drums and rhythm. Your own presets live in ~/.local/share/AxellGate/Presets.");
+    presetName.setTooltip ("Presets for vocals, drums and rhythm. Your own presets live in " AXELL_PRESETS_PATH ("AxellGate") ".");
     slotA.setTooltip ("A/B: two complete settings to compare.");
     slotB.setTooltip ("A/B: two complete settings to compare.");
     slotCopy.setTooltip ("Copy the current slot to the other one.");
