@@ -7,6 +7,10 @@
 #include <cstdio>
 #include <random>
 #include <thread>
+#ifdef _WIN32
+#include <cstdlib>
+static int setenv (const char* k, const char* v, int) { return _putenv_s (k, v); }   // POSIX setenv on Windows
+#endif
 
 namespace
 {
