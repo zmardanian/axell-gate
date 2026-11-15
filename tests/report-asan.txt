@@ -83,7 +83,7 @@ PASS  PITCH HOLD: block 512 vs 37 (gain difference) (48.0 kHz)                  
 PASS  PITCH HOLD: on in a new instance's engine parameters                                                      1.0000   [1 .. 1]
 PASS  mode switches while playing: largest sample step re the input's                                           1.0000 x  [0 .. 1.5]
 PASS  no memory allocation in process() (mode / speed / detection switches, bypass, BLEED)                      0.0000 allocs  [0 .. 0]
-ALL PASS: 85 of 85 checks passed (30.7 s)
+ALL PASS: 85 of 85 checks passed (30.6 s)
 PASS  parameter count = 56 (1.0: 35)
 PASS  parameter index 0 is 'mode' (version hint 1)
 PASS  parameter index 1 is 'detect' (version hint 1)

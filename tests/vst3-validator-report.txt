@@ -15,7 +15,7 @@
 	name = Axell Gate
 	category = Audio Module Class
 	subCategories = Fx|Dynamics
-	version = 4.0.0
+	version = 4.0.2
 	sdkVersion = VST 3.8.0
 	cid = ABCDEF019182FAEB4178796247746531
 
@@ -23,7 +23,7 @@
 	name = Axell Gate
 	category = Component Controller Class
 	subCategories = Fx|Dynamics
-	version = 4.0.0
+	version = 4.0.2
 	sdkVersion = VST 3.8.0
 	cid = ABCDEF011234ABCD4178796247746531
 

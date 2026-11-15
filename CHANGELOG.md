@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.2 - 2026-11-15
+- **The name in the suite's script wordmark.** The title now reads "Axell Gate" in Great Vibes, in the plugin's own
+  colour - the same wordmark as axellsdojo.com and the READMEs (SIL Open Font License; credited in THIRD_PARTY_NOTICES.md).
+- Nothing else changes: the audio is byte-for-byte the same as 4.0.1 (132 renders through the released 4.0.1 and the new
+  build: every factory preset and 40 random settings of every parameter, on a vocal and a mix).
+
 ## 4.0.1 - 2026-11-15
 - **Lighter, the same sound** (a suite-wide optimisation; the rule: byte-for-byte the same output). The voice
   detector's spectral flatness takes one logarithm per frame instead of 192, and the shared FFT multiplies complex
