@@ -128,16 +128,17 @@ The reasoning behind every design choice is in [docs/DECISIONS.md](docs/DECISION
 | **3.0.0** | 2026-10-26 | A second network trained on 111 voices (forced-aligned labels from Axell Velvet's research), consulted where 2.0's is unsure; the detector moved into the shared core (bit-identical) for Duo's and Master's VOICE HOLD; Axell's Dojo look | Unseen voices: voice lost -54.8 -> -67.2 dB, missed 0.33 -> 0.12 %; dry setup false opens 1.88 -> 0.22 %; the artist's takes as in 2.0; 278 DSP + 104 plugin checks, ASan clean, audit 42/42, pluginval L10, validator 47/47 |
 | **3.0.1** | 2026-10-26 | Faster pitch analysis in the shared core (the voice detector's pitch analysis): eight lags in registers, same summation order | Output byte-identical to 3.0.0; CPU 2.10 -> 1.91 % of one core (-9.1 %) |
 | **4.0.0** | 2026-10-27 | PITCH HOLD: a causal pitch tracker (YIN on the key, 70-400 Hz) keeps the level gate open through pitched voice under the threshold; never opens it, capped 500 ms; version in the header | The artist's 28 takes, LIVE gate: voiced frames cut 1.33 -> 0.77 % (-42 %), pauses unchanged; CPU 0.23 -> 0.30 %; 3.x projects render byte-identically; 302 DSP + 110 plugin checks, ASan clean, audit 42/42, pluginval L10, validator 47/47 |
+| **4.0.1** | 2026-11-15 | Faster shared core (detector flatness: one log per frame; inline FFT products) | Output byte-identical to 4.0.0 (132 renders: 25 presets + 40 random settings); CPU VOCAL 1.56 -> 1.47 %, + BLEED 3.52 -> 3.31 % of one core |
 
 Every design decision with its measurement: [docs/DECISIONS.md](docs/DECISIONS.md); all changes: [CHANGELOG.md](CHANGELOG.md).
 
 ## Install (Linux)
 
-Download `AxellGate-4.0.0-linux-x86_64.tar.gz` from the
+Download `AxellGate-4.0.1-linux-x86_64.tar.gz` from the
 [latest release](https://github.com/zmardanian/axell-gate/releases/latest) (optional: `sha256sum -c SHA256SUMS.txt`), then:
 
-    tar xzf AxellGate-4.0.0-linux-x86_64.tar.gz
-    cd AxellGate-4.0.0-linux-x86_64
+    tar xzf AxellGate-4.0.1-linux-x86_64.tar.gz
+    cd AxellGate-4.0.1-linux-x86_64
     ./install.sh
 
 Or let the [Axell Signature Dojo](https://github.com/zmardanian/axell-signature-dojo) install and update it.

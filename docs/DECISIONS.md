@@ -390,3 +390,12 @@ untouched; the cut frames are the quiet ones that fall through the threshold.
 - Legacy: projects saved before 4.0 (state version < 3) load with PITCH HOLD off - they play as they did. Verified: the artist's session state
   (saved by 3.x) through 3.0.1 and 4.0.0 in a host (48 kHz, 128-sample blocks), four takes: output byte-identical.
 
+
+## G26 - 4.0.1: the same sound, less work
+Part of the suite-wide optimisation campaign (profile of a 60 s vocal: the shared voice/sibilance detector 56 %, its
+FFT 16 %, ~192 logs per frame 9 %). Rule: byte-identical output.
+- **Kept (axell-core D1):** spectral flatness from one log of a mantissa product (frexp) instead of one log per bin.
+- **Kept (axell-core V1):** complex products written out in the FFT (GCC's std::complex went through __muldc3).
+- **Verified:** 132 renders vs the released 4.0.0 (25 presets + 40 seeded random settings, vocal + mix):
+  byte-identical; plugin process time -9.4 %; DSP benchmark VOCAL -5.7 %, + BLEED -6.0 %.
+- **Rejected by measurement:** AVX2 dispatch, FMA (changes output), PGO (< 1 %).

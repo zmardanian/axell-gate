@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.0.1 - 2026-11-15
+- **Lighter, the same sound** (a suite-wide optimisation; the rule: byte-for-byte the same output). The voice
+  detector's spectral flatness takes one logarithm per frame instead of 192, and the shared FFT multiplies complex
+  numbers inline.
+- Output byte-for-byte the same as 4.0.0: 132 renders through the released 4.0.0 and the new build (all 25 factory
+  presets and 40 random settings of every parameter, on a vocal and a mix).
+- CPU at 48 kHz (DSP suite benchmark): VOCAL smart 1.56 -> 1.47 % of one core (-5.7 %), with BLEED REMOVAL
+  3.52 -> 3.31 % (-6.0 %); SHAPE and RHYTHM do not run the detector (unchanged). Plugin process time over the 132
+  renders -9.4 %.
+- Verified: DSP 302 + plugin 110 checks (ASan + UBSan clean), independent audit 42/42, core 143/143, pluginval
+  strictness 10 (+10 extra runs, 0 crashes), VST3 validator 47/47.
+
 ## 4.0.0 - 2026-10-27
 - **PITCH HOLD (new, LEVEL detection and the zero-latency LIVE gate):** while the voice is still pitched, the gate
   stays open even when the level dips under the threshold - soft syllables and voiced word endings are no longer cut.
