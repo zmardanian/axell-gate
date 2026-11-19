@@ -201,6 +201,8 @@ most often bit-identical). The plugin is not code-signed yet; DAWs load it direc
 
 ### Linux
 
+Runs on x86_64 Linux with glibc 2.35 or newer: Ubuntu 22.04+, Debian 12+, Linux Mint 21+, Fedora 36+, Arch, Bazzite.
+
 Download `AxellGate-4.0.2-linux-x86_64.tar.gz` from the
 [latest release](https://github.com/zmardanian/axell-gate/releases/latest) (optional: `sha256sum -c SHA256SUMS.txt`), then:
 
