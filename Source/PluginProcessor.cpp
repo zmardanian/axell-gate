@@ -17,6 +17,7 @@ juce::String dbText (float v) { return (v > 0.05f ? "+" : "") + juce::String (v,
 juce::String msText (float v) { return v < 10.0f ? juce::String (v, 2) + " ms" : juce::String (juce::roundToInt (v)) + " ms"; }
 juce::String pctText (float v) { return juce::String (juce::roundToInt (v)) + " %"; }
 const juce::Identifier kPresetNameId ("presetName");
+const juce::Identifier kProgramId ("program");   // the factory preset last chosen, so hosts see the same Program after a reload
 const juce::Identifier kStateVersionId ("stateVersion"), kBleedPathId ("bleedPath"), kBleedFsId ("bleedFs");
 constexpr int kStateVersion = 3;   // 3 = 4.0 (PITCH HOLD)
 
@@ -460,6 +461,7 @@ void GateProcessor::getStateInformation (juce::MemoryBlock& destData)
     auto state = apvts.copyState();
     state.setProperty (kPresetNameId, getPresetName(), nullptr);
     state.setProperty (kStateVersionId, kStateVersion, nullptr);
+    state.setProperty (kProgramId, currentProgram.load(), nullptr);
     std::vector<float> path;
     double rate = 0.0;
     if (dsp.copyBleedPath (path, rate) || (! loadedPath.empty() && (path = loadedPath, rate = loadedPathFs, true)))
@@ -490,6 +492,10 @@ void GateProcessor::setStateInformation (const void* data, int sizeInBytes)
         }
         tree.removeProperty (kBleedPathId, nullptr);
         tree.removeProperty (kBleedFsId, nullptr);
+        // only the index: the parameters come from the state itself, the preset is not applied again
+        if (tree.hasProperty (kProgramId))
+            currentProgram.store (juce::jlimit (0, juce::jmax (0, getNumPrograms() - 1), (int) tree.getProperty (kProgramId)));
+        tree.removeProperty (kProgramId, nullptr);
         restoreTree (tree);
     }
 }

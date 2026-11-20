@@ -1,4 +1,5 @@
 #include "PluginEditor.h"
+#include <axell/gui/ScreenReader.h>
 
 #include <axell/gui/BrandTitle.h>
 
@@ -256,6 +257,7 @@ GateEditor::GateEditor (GateProcessor& p) : AudioProcessorEditor (&p), proc (p)
     constructed = true;
     timerCallback();
     startTimerHz (30);
+    axell::nameControlsForScreenReaders (*this);   // Narrator / VoiceOver read every control by name
 }
 
 GateEditor::~GateEditor()
