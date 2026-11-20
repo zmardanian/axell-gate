@@ -323,6 +323,6 @@ Licence: GNU AGPLv3 (`LICENSE`); third-party components and the CMU ARCTIC and V
 
 From the November 2026 releases on, `SHA256SUMS.txt` is signed with the suite's release key: `minisign -Vm SHA256SUMS.txt -P RWQJLVJSETsP7RRz1rdiugX9w09wtGCtwEc5hHU8k9S+crL/ekfTkQKG`, then `sha256sum -c --ignore-missing SHA256SUMS.txt` (the Axell Signature Dojo checks both itself). How releases are built and signed: [code signing policy](https://www.axellsdojo.com/code-signing/).
 
-<img src="docs/vst-compatible.svg" alt="VST Compatible" width="72">
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/vst-compatible-dark.svg"><img src="docs/vst-compatible.svg" alt="VST Compatible" width="72"></picture>
 
 <sub>VST is a registered trademark of Steinberg Media Technologies GmbH. 1176, 1176LN, LA-2A, UADx and Universal Audio are trademarks of their respective owners. The Axell plugins are independent works, not affiliated with or endorsed by them; the names only describe what was measured and compared.</sub>
